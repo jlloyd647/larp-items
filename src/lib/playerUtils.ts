@@ -3,7 +3,7 @@ import { players } from "./playerConsts";
 import { characters } from "./charConsts";
 
 // Get all characters for a specific player
-export function getCharactersForPlayer(playerId: number): Character[] {
+export const getCharactersForPlayer = async (playerId: number): Promise<Character[]> => {
   return characters.filter(character => character.playerId === playerId);
 }
 

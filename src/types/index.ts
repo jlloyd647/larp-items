@@ -25,22 +25,29 @@ export type ArtisanRecipe = {
 }
 
 export type Player = {
-  type: 'player';
   id: number;
   name: string;
-}
+  characters?: Character[] | null;
+  emergencyContactName?: string | null;
+  emergencyContactNumber?: string | null;
+  email?: string | null;
+  liabilityWaiverSigned?: boolean | null;
+};
 
 export type Character = {
   id: number;
   playerId: number;
   name: string;
   xp: number;
-  skills: Skill[];
+  skills: number[];
 }
 
 export type Skill = {
   id: number;
+  category: string;
   name: string;
   desc: string;
   xpCost: number;
-}
+  ranks: number;
+  skillCost: number;
+};
