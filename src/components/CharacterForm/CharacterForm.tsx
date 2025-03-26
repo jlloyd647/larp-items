@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
 } from '../ui/card';
@@ -14,14 +12,11 @@ import {
   TabsTrigger,
   TabsContent,
 } from '../ui/tabs';
-import { Button } from '../ui/button';
-import { Printer } from 'lucide-react';
 import type { Character } from '@/types';
 
 import CharacterView from './CharacterView';
 import CharacterEditForm from './CharacterEditForm';
 import CharacterCard from './CharacterCard';
-import CharacterSkillsPanel from './CharacterSkillsPanel';
 
 type CharacterFormProps = {
   selectedCharacter: Character;
@@ -32,10 +27,6 @@ export const CharacterForm = ({ selectedCharacter }: CharacterFormProps) => {
 
   return (
     <Card className="w-[1000px] h-[500px]">
-      <CardHeader>
-        <CardTitle>{selectedCharacter.name}</CardTitle>
-      </CardHeader>
-
       <CardContent>
         <Tabs value={tab} onValueChange={(value) => setTab(value as 'view' | 'edit' | 'card')} className="w-full">
           <TabsList className="mb-4">

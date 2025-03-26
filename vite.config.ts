@@ -4,22 +4,30 @@ import tailwindcss from '@tailwindcss/vite'
 import electron from 'vite-plugin-electron'
 import { defineConfig } from "vite"
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     electron([
       {
-        // Main process entry point
-        entry: 'electron/main.ts', // Changed to .ts for TypeScript support
+        entry: 'electron/main.ts',
         onstart({ startup }) {
           startup();
         },
+        vite: {
+          build: {
+            outDir: 'dist-electron',
+          },
+        },
       },
       {
-        entry: 'electron/preload.ts', // Changed to .ts for TypeScript support
+        entry: 'electron/preload.ts',
         onstart({ reload }) {
           reload();
+        },
+        vite: {
+          build: {
+            outDir: 'dist-electron', // 👈 this ensures preload is built to the right place
+          },
         },
       },
     ]),
@@ -31,12 +39,10 @@ export default defineConfig({
     },
   },
   build: {
-    // If issues with ESM/CJS conflicts
     commonjsOptions: {
       transformMixedEsModules: true,
     },
   },
-  // Ensure React 19 plays nicely with Electron
   optimizeDeps: {
     include: [
       'react',
@@ -45,7 +51,6 @@ export default defineConfig({
       'zod'
     ],
     esbuildOptions: {
-      // Fix for certain React 19 features
       target: 'esnext',
     },
   },

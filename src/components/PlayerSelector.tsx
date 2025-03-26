@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -13,11 +14,19 @@ import {
 
 import { useCharacterStore } from '@/stores/useCharacterStore';
 import type { Player, Character } from '@/types/index';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import AddPlayerForm from '@/components/PlayerForm/AddPlayerForm';
 
 type PlayerSelectorProps = {
   list: Player[];
-  setSelectedPlayer: (player: Player) => void;
-  setSelectedCharacter: (character: Character) => void;
+  setSelectedPlayer: (player: Player | null) => void;
+  setSelectedCharacter: (character: Character | null) => void;
 };
 
 const PlayerSelector = ({
@@ -27,6 +36,8 @@ const PlayerSelector = ({
 }: PlayerSelectorProps) => {
   const [search, setSearch] = useState('');
   const [expandedPlayerId, setExpandedPlayerId] = useState<number | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const characters = useCharacterStore((state) => state.characters);
 
   const getCharactersForPlayer = useCharacterStore(
     (state) => state.getCharactersForPlayer
@@ -35,6 +46,17 @@ const PlayerSelector = ({
   const filteredList = list.filter((player) =>
     player.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Watch for changes in character list
+  useEffect(() => {
+    if (expandedPlayerId) {
+      const matching = characters.find((c) => c.playerId === expandedPlayerId);
+      if (matching) {
+        // Will re-render and populate the expanded list
+        setExpandedPlayerId(expandedPlayerId);
+      }
+    }
+  }, [characters]);
 
   return (
     <div className="w-[300px]">
@@ -46,7 +68,7 @@ const PlayerSelector = ({
       />
       <ScrollArea className="h-[400px] rounded-md border p-4">
         {filteredList.map((player) => {
-          const isExpanded = expandedPlayerId === player.id;
+          const isExpanded = Number(expandedPlayerId) === Number(player.id);
           const characters = getCharactersForPlayer(Number(player.id));
 
           return (
@@ -59,7 +81,11 @@ const PlayerSelector = ({
             >
               <div className="flex items-center">
                 <Button
-                  onClick={() => setSelectedPlayer(player)}
+                  onClick={() => {
+                    setSelectedPlayer(player)
+                    setSelectedCharacter(null)
+                    }
+                  }
                   variant="ghost"
                   className="flex-grow justify-start py-2 px-4 mb-1 last:mb-0"
                 >
@@ -77,7 +103,12 @@ const PlayerSelector = ({
                     characters.map((character) => (
                       <Button
                         key={character.id}
-                        onClick={() => setSelectedCharacter(character)}
+                        onClick={() => {
+                          setSelectedCharacter(character)
+                          setSelectedPlayer(null)
+                        }
+
+                        }
                         variant="ghost"
                         className="w-full justify-start py-2 px-4 mb-1 last:mb-0"
                       >
@@ -95,6 +126,25 @@ const PlayerSelector = ({
           );
         })}
       </ScrollArea>
+
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="mt-4 w-[300px]">
+            Add New Player
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Player</DialogTitle>
+          </DialogHeader>
+
+          <AddPlayerForm
+            closeDialog={() => setIsAddDialogOpen(false)}
+            setSelectedPlayer={setSelectedPlayer}
+            setSelectedCharacter={setSelectedCharacter}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -16,9 +16,6 @@ const SearchableDropdown = ({recipes, setSelectedRecipe}: ChildProps) => {
   const filteredRecipes = recipes.filter((recipe) =>
     recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  useEffect(() => {
-    console.log(recipes);
-  }, [recipes]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

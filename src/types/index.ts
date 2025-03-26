@@ -38,8 +38,22 @@ export type Character = {
   id: number;
   playerId: number;
   name: string;
-  xp: number;
-  skills: number[];
+  xp?: number;
+  courtXp?: number;
+  court?: string;
+  bank?: number;
+  skills?: {
+    skillId: number;
+    rank: number;
+    cxpByRank: number[]; // e.g. [2, 0, 1] = 3 ranks, CxP used per rank
+  }[];
+  magicItem: string;
+  magicItemCXp: number;
+  deaths: number;
+  path: string;
+  prologue: string;
+  communityPoints: number;
+  characterRace: string;
 }
 
 export type Skill = {

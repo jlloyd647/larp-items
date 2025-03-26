@@ -16,8 +16,6 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
   uses,
 }) => {
   const handlePrint = () => {
-
-    console.log(secondaryResourceText)
     const printWindow = window.open('', '_blank');
     const numberOfUses = "▢ ".repeat(uses);
     if (printWindow) {

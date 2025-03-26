@@ -20,18 +20,6 @@ const HomePage: React.FC = () => {
   const players = usePlayerStore((state) => state.players);
   const skills = useSkillStore((state) => state.skills);
 
-  useEffect(() => {
-    setSelectedCharacter(null);
-  }, [selectedPlayer]);
-
-  useEffect(() => {
-    console.log(skills);
-  }, [skills]);
-
-  useEffect(() => {
-    console.log(selectedSkill)
-  }, [selectedSkill]);
-
   return (
     <div className="">
       <div className=''>

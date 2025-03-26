@@ -25,7 +25,7 @@ export const characters: Character[] = [
   {
     id: 101,
     playerId: 1,
-    name: "Ezekiel",
+    name: "Ezekieeeel",
     xp: 210,
     skills: [],
   },
