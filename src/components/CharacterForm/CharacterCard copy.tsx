@@ -4,11 +4,11 @@ import React, { useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Button } from '../ui/button';
 import { Printer } from 'lucide-react';
-import type { Character, Player } from '@/types';
+import type { Character } from '@/types';
 
 type CharacterCardProps = {
   character: Character;
-  player: Player;
+  getSkillNameWithRank: (skillId: number, rank: number) => string;
 };
 
 const CharacterCard = ({ character }: CharacterCardProps) => {
@@ -46,7 +46,7 @@ const CharacterCard = ({ character }: CharacterCardProps) => {
       {/* Header */}
       <div className="flex justify-between">
         <div>
-          <p><strong>Player:</strong> {player.name}</p>
+          {/* <p><strong>Player:</strong> {player.name}</p> */}
           <p><strong>Character:</strong> {character.name}</p>
           <p><strong>Court:</strong> {character.court}</p>
         </div>

@@ -6,6 +6,7 @@ import { useCharacterStore } from '@/stores/useCharacterStore';
 import { Card, CardContent } from '@/components/ui/card';
 import CharacterAttributes from './CharacterAttributes';
 import { COURTS } from '@/lib/consts';
+import CharacterPrintButton from './CharacterPrintButton';
 
 type CharacterViewProps = {
   character: Character;

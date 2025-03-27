@@ -61,3 +61,25 @@ app.on('activate', () => {
 });
 
 // Any additional IPC handlers can go here
+
+import { ipcMain } from 'electron';
+
+ipcMain.on('print-character-card', () => {
+  const win = BrowserWindow.getFocusedWindow();
+  if (!win) return;
+
+  win.webContents.print({
+    silent: true,
+    printBackground: true,
+    landscape: true,
+    margins: { marginType: 'none' }, // 👈 required
+    pageSize: {
+      width: 148000, // 148mm in microns
+      height: 105000, // 105mm
+    },
+  }, (success, errorType) => {
+    if (!success) {
+      console.error('Failed to print character card:', errorType);
+    }
+  });
+});

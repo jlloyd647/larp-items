@@ -44,7 +44,7 @@ const ScrollableList = ({ list, selectedId, setSelectedId }: SpellSelectorProps)
 
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="mt-4 w-full">
+          <Button variant="outline" className="mt-4 w-full" disabled>
             Add Spell
           </Button>
         </DialogTrigger>

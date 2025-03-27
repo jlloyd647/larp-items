@@ -19,6 +19,9 @@ const STORE_KEYS = [
   'character-storage',
   'event-storage',
   'player-storage',
+  'boon-storage',
+  'skill-storage',
+  'spell-storage',
   // add more as needed
 ];
 

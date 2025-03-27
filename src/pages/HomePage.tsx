@@ -38,10 +38,6 @@ const HomePage: React.FC = () => {
   const selectedEvent = useEventStore((s) => s.getEventById(selectedEventId ?? -1));
   const selectedSpell = useSpellStore((s) => s.getSpellById(selectedSpellId ?? -1));
 
-  useEffect(() => {
-    console.debug(selectedEventId);
-  }, [selectedEventId])
-
   return (
     <div className="">
       <div className=''>

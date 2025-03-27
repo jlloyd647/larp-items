@@ -1,26 +1,63 @@
-import { app as e, BrowserWindow as t } from "electron";
-import n from "path";
-import { fileURLToPath as s } from "url";
-const r = s(import.meta.url), a = n.dirname(r);
-process.platform === "win32" && e.setAppUserModelId(e.getName());
-const l = e.requestSingleInstanceLock();
-l || (e.quit(), process.exit(0));
-let o = null;
-async function i() {
-  o = new t({
+import { app, BrowserWindow, ipcMain } from "electron";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+if (process.platform === "win32") {
+  app.setAppUserModelId(app.getName());
+}
+const isSingleInstance = app.requestSingleInstanceLock();
+if (!isSingleInstance) {
+  app.quit();
+  process.exit(0);
+}
+let mainWindow = null;
+async function createWindow() {
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: n.join(a, "preload.js"),
-      nodeIntegration: !1,
-      contextIsolation: !0
+      preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: false,
+      contextIsolation: true
     }
-  }), process.env.VITE_DEV_SERVER_URL ? (await o.loadURL(process.env.VITE_DEV_SERVER_URL), o.webContents.openDevTools()) : o.loadFile(n.join(process.env.DIST || "dist", "index.html"));
+  });
+  if (process.env.VITE_DEV_SERVER_URL) {
+    await mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(process.env.DIST || "dist", "index.html"));
+  }
 }
-e.whenReady().then(i);
-e.on("window-all-closed", () => {
-  process.platform !== "darwin" && e.quit();
+app.whenReady().then(createWindow);
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
-e.on("activate", () => {
-  t.getAllWindows().length === 0 && i();
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+ipcMain.on("print-character-card", () => {
+  const win = BrowserWindow.getFocusedWindow();
+  if (!win) return;
+  win.webContents.print({
+    silent: true,
+    printBackground: true,
+    landscape: true,
+    margins: { marginType: "none" },
+    // 👈 required
+    pageSize: {
+      width: 148e3,
+      // 148mm in microns
+      height: 105e3
+      // 105mm
+    }
+  }, (success, errorType) => {
+    if (!success) {
+      console.error("Failed to print character card:", errorType);
+    }
+  });
 });
