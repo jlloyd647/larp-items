@@ -2,6 +2,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from "@/components/ui/dialog"
+import AddSkillForm from "../SkillForm/AddSkillForm"
 
 type ListProps<T> = {
   setSelected: React.Dispatch<React.SetStateAction<T>>;
@@ -10,6 +12,7 @@ type ListProps<T> = {
 
 const ScrollableList = <T extends { id: number, name: string}>({ list, setSelected }: ListProps<T>) => {
   const [search, setSearch] = useState("");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const filteredList = list.filter((list) =>
     list.name.toLowerCase().includes(search.toLowerCase())
@@ -40,6 +43,20 @@ const ScrollableList = <T extends { id: number, name: string}>({ list, setSelect
             </div>
         ))}
       </ScrollArea>
+
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="mt-4 w-full">
+            Add Skill
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Skill</DialogTitle>
+          </DialogHeader>
+          <AddSkillForm />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

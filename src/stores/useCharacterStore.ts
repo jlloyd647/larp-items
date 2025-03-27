@@ -13,6 +13,10 @@ type CharacterState = {
   removeSkillFromCharacter: (characterId: number, skillId: number) => void;
   getCharacterSkillRank: (characterId: number, skillId: number) => number;
   getCourtXpSpentForCharacter: (characterId: number) => number;
+  getXpSpentForCharacter: (characterId: number) => number;
+  addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) => void;
+  addBoonToCharacter: (characterId: number, boonId: number) => void;
+  removeBoonFromCharacter: (characterId: number, boonId: number) => void;
 };
 
 export const useCharacterStore = create<CharacterState>()(
@@ -34,12 +38,7 @@ export const useCharacterStore = create<CharacterState>()(
           prologue: "",
           communityPoints: 0,
           characterRace: "Kith",
-          skills: [
-            {skillId: 120, rank: 1}, 
-            {skillId: 121, rank: 1}, 
-            {skillId: 122, rank: 1}, 
-            {skillId: 123, rank: 1}, 
-            {skillId: 124, rank: 2}],
+          skills: [],
         },
         {
           id: 2,
@@ -222,8 +221,72 @@ export const useCharacterStore = create<CharacterState>()(
       
         return skillCxp + magicCxp;
       },
+
+      getXpSpentForCharacter: (characterId: number): number => {
+        const character = get().characters.find((c) => c.id === characterId);
+        if (!character) return 0;
+      
+        const allSkills = useSkillStore.getState().skills;
+      
+        return character.skills.reduce((totalXp, { skillId, rank, cxpByRank }) => {
+          const skill = allSkills.find((s) => s.id === skillId);
+          if (!skill) return totalXp;
+      
+          const xpForSkill = Array.from({ length: rank }).reduce<number>((sum, _, i) => {
+            const cxpUsed = cxpByRank?.[i] ?? 0;
+            const xpCost = Math.max(0, skill.xpCost - cxpUsed);
+            return sum + xpCost;
+          }, 0);
+      
+          return totalXp + xpForSkill;
+        }, 0);
+      },
+
+      addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) =>
+        set((state) => ({
+          characters: state.characters.map((c) => {
+            if (Number(c.id) !== Number(characterId)) return c;
+      
+            const existingSpells = c.spells ?? []; // Fallback to empty array
+            return {
+              ...c,
+              spells: [...existingSpells, spell],
+            };
+          }),
+        })),
+
+      addBoonToCharacter: (characterId: number, boonId: number) => {
+        set((state) => ({
+          characters: state.characters.map((char) => {
+            if (char.id !== characterId) return char;
+      
+            const currentBoons = char.boons ?? [];
+            if (currentBoons.includes(boonId)) {
+              console.warn(`Character ${characterId} already has boon ${boonId}`);
+              return char;
+            }
+      
+            return {
+              ...char,
+              boons: [...currentBoons, boonId],
+            };
+          }),
+        }));
+      },
+
+      removeBoonFromCharacter: (characterId: number, boonId: number) => {
+        set((state) => ({
+          characters: state.characters.map((char) =>
+            char.id === characterId
+              ? {
+                  ...char,
+                  boons: (char.boons ?? []).filter((id) => id !== boonId),
+                }
+              : char
+          ),
+        }));
+      },
     }),
-    
     {
       name: 'character-storage', // localStorage key
     }

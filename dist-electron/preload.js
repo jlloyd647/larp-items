@@ -1,20 +1,16 @@
-import { contextBridge, ipcRenderer } from "electron";
-const validSendChannels = ["toMain"];
-const validReceiveChannels = ["fromMain"];
-contextBridge.exposeInMainWorld("electronAPI", {
+import { contextBridge as r, ipcRenderer as o } from "electron";
+const d = ["toMain"], t = ["fromMain"];
+r.exposeInMainWorld("electronAPI", {
   // Send messages to the main process
-  send: (channel, data) => {
-    if (validSendChannels.includes(channel)) {
-      ipcRenderer.send(channel, data);
-    }
+  send: (e, n) => {
+    d.includes(e) && o.send(e, n);
   },
   // Receive messages from the main process
-  receive: (channel, callback) => {
-    if (validReceiveChannels.includes(channel)) {
-      const subscription = (_event, ...args) => callback(...args);
-      ipcRenderer.on(channel, subscription);
-      return () => {
-        ipcRenderer.removeListener(channel, subscription);
+  receive: (e, n) => {
+    if (t.includes(e)) {
+      const i = (c, ...s) => n(...s);
+      return o.on(e, i), () => {
+        o.removeListener(e, i);
       };
     }
     return () => {

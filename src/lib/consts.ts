@@ -309,3 +309,20 @@ export const recipes: ArtisanRecipe[] = [
     secondaryResourceQuantity: 1,
   },
 ];
+
+export const COURTS = [
+  { id: 1, name: "Courtless" },
+  { id: 2, name: "Catalytic" },
+  { id: 3, name: "Feral" },
+  { id: 4, name: "Radiant" },
+  { id: 5, name: "Umbral" },
+  { id: 6, name: "Undying" },
+] as const;
+
+export const ELEMENTALS = [
+  { id: 1, name: "Air" },
+  { id: 2, name: "Earth" },
+  { id: 3, name: "Fire" },
+  { id: 4, name: "Neon" },
+  { id: 5, name: "Water" },
+] as const;

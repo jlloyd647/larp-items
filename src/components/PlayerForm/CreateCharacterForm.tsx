@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useCharacterStore } from '@/stores/useCharacterStore'; // Already imported
 import { Button } from '../ui/button';
 
-const courtOptions = ['Catalytic', 'Feral', 'Radiant', 'Umbral', 'Undying'];
+const courtOptions = ['Courtless', 'Catalytic', 'Feral', 'Radiant', 'Umbral', 'Undying'];
 
 type CreateCharacterFormProps = {
   playerId: number;

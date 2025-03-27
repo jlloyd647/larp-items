@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '../ui/dialog'
 import AddSkillScrollList from './AddSkillScrollList';
 import { useCharacterStore } from '@/stores/useCharacterStore';
 import RemoveSkillScrollList from './RemoveSkillScrollList';
+import { COURTS } from '@/lib/consts';
 
 type CharacterEditFormProps = {
   character: Character;
@@ -23,7 +24,7 @@ type CharacterEditFormProps = {
 
 const pathOptions = ['The Bargained', 'The Lost', 'The Seeker', 'The Taken'];
 const prologueOptions = ['Established', 'New'];
-const raceOptions = ['Kith', 'Elemental'];
+const raceOptions = ['Kith', 'Air Elemental', 'Earth Elemental', 'Fire Elemental', 'Neon Elemental', 'Water Elemental'];
 const courtOptions = ['Courtless', 'Catalytic', 'Feral', 'Radiant', 'Umbral', 'Undying'];
 
 
@@ -77,9 +78,9 @@ const CharacterEditForm = ({ character }: CharacterEditFormProps) => {
               <SelectValue placeholder="Select court" />
             </SelectTrigger>
             <SelectContent>
-              {courtOptions.map((court) => (
-                <SelectItem key={court} value={court}>
-                  {court}
+              {COURTS.map((court) => (
+                <SelectItem key={court.id} value={court.id.toString()}>
+                  {court.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -250,28 +251,6 @@ const CharacterEditForm = ({ character }: CharacterEditFormProps) => {
           'Save Changes'
         )}
       </Button>
-        <div className="flex justify-between items-center">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">+ Add Skill</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogTitle>Add Skills</DialogTitle>
-              <AddSkillScrollList characterId={character.id} />
-            </DialogContent>
-          </Dialog>
-        </div>
-        <div className="flex justify-between items-center">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">- Remove Skill</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogTitle>Remove Skills</DialogTitle>
-              <RemoveSkillScrollList characterId={character.id} />
-            </DialogContent>
-          </Dialog>
-        </div>
       </div>
     </form>
   );

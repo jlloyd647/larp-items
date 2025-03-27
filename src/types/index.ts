@@ -1,3 +1,4 @@
+import { players } from './../lib/playerConsts';
 import { Description } from './../../node_modules/cmdk/node_modules/@radix-ui/react-dialog/dist/index.d';
 export interface Item {
   id: number;
@@ -40,13 +41,18 @@ export type Character = {
   name: string;
   xp?: number;
   courtXp?: number;
-  court?: string;
+  court?: number;
+  elemental?: number;
   bank?: number;
   skills?: {
     skillId: number;
     rank: number;
     cxpByRank: number[]; // e.g. [2, 0, 1] = 3 ranks, CxP used per rank
   }[];
+  spells?: {
+    spellId: number;
+    cxpUsed: number; // e.g. [2, 5] = CxP used
+  }
   magicItem: string;
   magicItemCXp: number;
   deaths: number;
@@ -54,6 +60,8 @@ export type Character = {
   prologue: string;
   communityPoints: number;
   characterRace: string;
+  boons?: number[];
+  banes?: number[];
 }
 
 export type Skill = {
@@ -65,3 +73,42 @@ export type Skill = {
   ranks: number;
   skillCost: number;
 };
+
+export type Event = {
+  id: number;
+  name: string;
+  date: string;
+  attendees?: {
+    playerId: number;
+    characterId: number;
+  }[];
+}
+
+export type Spell = {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  xpCost: number;
+  skillCost: number
+  specialEffect?: string;
+  rank: number;
+}
+
+export type Boon = {
+  id: number;
+  name: string;
+  description: string;
+  source: 'Court' | 'Elemental';
+  sourceId: number;
+  rank: number;
+}
+
+export type Bane = {
+  id: number;
+  name: string;
+  description: string;
+  source: 'Court' | 'Elemental';
+  sourceId: number;
+  rank: number;
+}
