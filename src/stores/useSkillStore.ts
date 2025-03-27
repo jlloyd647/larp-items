@@ -6,6 +6,7 @@ type SkillState = {
   skills: Skill[];
   getSkillById: (id: number) => Skill | undefined;
   getSkillsByIds: (ids: number[]) => Skill[];
+  updateSkill: (updatedSkill: Skill) => void;
 };
 
 const skillData: Skill[] = [
@@ -127,9 +128,18 @@ export const useSkillStore = create<SkillState>()(
   persist(
     (set, get) => ({
       skills: skillData,
+
       getSkillById: (id) => get().skills.find((skill) => skill.id === id),
+
       getSkillsByIds: (ids) =>
         get().skills.filter((skill) => ids.includes(skill.id)),
+
+      updateSkill: (updatedSkill) =>
+        set((state) => ({
+          skills: state.skills.map((skill) =>
+            skill.id === updatedSkill.id ? updatedSkill : skill
+          ),
+        })),
     }),
     {
       name: 'skill-storage',

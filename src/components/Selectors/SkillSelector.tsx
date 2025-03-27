@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from "@/components/ui/dialog"
 import AddSkillForm from "../SkillForm/AddSkillForm"
+import { Skill } from "@/types"
 
-type ListProps<T> = {
-  setSelected: React.Dispatch<React.SetStateAction<T>>;
-  list: T[];
-}
+type SkillSelectorProps = {
+  list: Skill[];
+  selectedId: number | null;
+  setSelectedId: (id: number) => void;
+};
 
-const ScrollableList = <T extends { id: number, name: string}>({ list, setSelected }: ListProps<T>) => {
+const ScrollableList = ({ list, selectedId, setSelectedId }: SkillSelectorProps) => {
   const [search, setSearch] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -34,8 +36,8 @@ const ScrollableList = <T extends { id: number, name: string}>({ list, setSelect
         {filteredList.map((listItem) => (
             <div className="flex items-center">
               <Button
-                onClick={() => setSelected(listItem)}
-                variant="ghost"
+                onClick={() => setSelectedId(listItem.id)}
+                variant={selectedId === listItem.id ? 'default' : 'ghost'}
                 className="flex-grow justify-start py-2 px-4 mb-1 last:mb-0"
               >
                 {listItem.name}

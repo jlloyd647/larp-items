@@ -18,6 +18,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 
 import type { Skill } from '@/types';
+import SkillEditForm from './SkillEditForm';
 
 type SkillFormProps = {
   skill: Skill;
@@ -46,7 +47,6 @@ export const SkillForm = ({ skill }: SkillFormProps) => {
 
           <TabsContent value="view">
             <div className="space-y-2">
-              <p><strong>Name:</strong> {name}</p>
               <p><strong>Description:</strong> {desc || 'No description'}</p>
               <p><strong>XP Cost:</strong> {xpCost}</p>
               <p><strong>Ranks:</strong> {ranks}</p>
@@ -55,55 +55,7 @@ export const SkillForm = ({ skill }: SkillFormProps) => {
           </TabsContent>
 
           <TabsContent value="edit">
-            <form className="space-y-4">
-              <div>
-                <Label htmlFor="skill-name">Name</Label>
-                <Input
-                  id="skill-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="skill-desc">Description</Label>
-                <Textarea
-                  id="skill-desc"
-                  value={desc}
-                  onChange={(e) => setDesc(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="xp-cost">XP Cost</Label>
-                <Input
-                  id="xp-cost"
-                  type="number"
-                  value={xpCost}
-                  onChange={(e) => setXpCost(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="ranks">Ranks</Label>
-                <Input
-                  id="ranks"
-                  type="number"
-                  value={ranks}
-                  onChange={(e) => setRanks(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="skill-cost">Skill Cost</Label>
-                <Input
-                  id="skill-cost"
-                  type="number"
-                  value={skillCost}
-                  onChange={(e) => setSkillCost(e.target.value)}
-                />
-              </div>
-            </form>
+            <SkillEditForm skillId={skill.id} />
           </TabsContent>
         </Tabs>
       </CardContent>

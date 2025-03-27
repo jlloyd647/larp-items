@@ -25,10 +25,10 @@ const HomePage: React.FC = () => {
   const [selectedRecipe, setSelectedRecipe] = React.useState<ArtisanRecipe>(recipes[0]);
   const [selectedPlayer, setSelectedPlayer] = React.useState<Player | null>(null);
   const [selectedCharacter, setSelectedCharacter] = React.useState<Character | null>(null);
-  const [selectedSkill, setSelectedSkill] = React.useState<Skill | null>(null);
   const [selectedEventId, setSelectedEventId] = React.useState<number | null>(null);
   const [selectedSpellId, setSelectedSpellId] = React.useState<number | null>(null);
   const [selectedBoonOrBaneId, setSelectedBoonOrBaneId] = React.useState<number | null>(null);
+  const [selectedSkillId, setSelectedSkillId] = React.useState<number | null>(null);
   const players = usePlayerStore((state) => state.players);
   const skills = useSkillStore((state) => state.skills);
   const events = useEventStore((state) => state.events);
@@ -37,6 +37,7 @@ const HomePage: React.FC = () => {
 
   const selectedEvent = useEventStore((s) => s.getEventById(selectedEventId ?? -1));
   const selectedSpell = useSpellStore((s) => s.getSpellById(selectedSpellId ?? -1));
+  const selectedSkill = useSkillStore((s) => s.getSkillById(selectedSkillId ?? -1));
 
   return (
     <div className="">
@@ -90,10 +91,14 @@ const HomePage: React.FC = () => {
           <TabsContent value="skills">
             <div className='flex flex-row gap-4'>
               <div>
-                <SkillSelector list={skills} setSelected={setSelectedSkill}/>
+                <SkillSelector 
+                  list={skills} 
+                  selectedId={selectedSkillId}
+                  setSelectedId={setSelectedSkillId}
+                />
               </div>
               <div>
-                {selectedSkill && (<SkillForm skill={selectedSkill} />)}
+                {selectedSkill && (<SkillForm key={selectedSkillId} skill={selectedSkill} />)}
               </div>
             </div>
           </TabsContent>  
