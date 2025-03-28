@@ -17,6 +17,7 @@ type CharacterState = {
   addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) => void;
   addBoonToCharacter: (characterId: number, boonId: number) => void;
   removeBoonFromCharacter: (characterId: number, boonId: number) => void;
+  addTraitToCharacter: (characterId: number, trait: { id: number }) => void; // Add a trait to a character
 };
 
 export const useCharacterStore = create<CharacterState>()(
@@ -286,6 +287,18 @@ export const useCharacterStore = create<CharacterState>()(
           ),
         }));
       },
+
+      addTraitToCharacter: (characterId: number, trait: Trait) =>
+        set((state) => ({
+          characters: state.characters.map((char) =>
+            char.id === characterId
+              ? {
+                  ...char,
+                  traits: [...(char.traits || []), { id: trait.id }],
+                }
+              : char
+          ),
+        })),
     }),
     {
       name: 'character-storage', // localStorage key

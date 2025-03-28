@@ -22,6 +22,7 @@ const STORE_KEYS = [
   'boon-storage',
   'skill-storage',
   'spell-storage',
+  'trait-storage',
   // add more as needed
 ];
 

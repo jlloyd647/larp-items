@@ -19,7 +19,9 @@ import EventSelector from '@/components/Selectors/EventSelector';
 import SpellSelector from '@/components/Selectors/SpellSelector';
 import GistSyncPanel from '@/components/DataSync/GistSyncPanel';
 import { useBoonStore } from '@/stores/useBoonStore';
-import BoonAndBaneSelector from '@/components/Selectors/BoonsAndBanesSelector';
+import TraitSelector from '@/components/Selectors/TraitSelector';
+import { useTraitStore } from '@/stores/useTraitStore';
+import TraitForm from '@/components/BoonsAndBanesForm/TraitForm';
 
 const HomePage: React.FC = () => {
   const [selectedRecipe, setSelectedRecipe] = React.useState<ArtisanRecipe>(recipes[0]);
@@ -27,17 +29,18 @@ const HomePage: React.FC = () => {
   const [selectedCharacter, setSelectedCharacter] = React.useState<Character | null>(null);
   const [selectedEventId, setSelectedEventId] = React.useState<number | null>(null);
   const [selectedSpellId, setSelectedSpellId] = React.useState<number | null>(null);
-  const [selectedBoonOrBaneId, setSelectedBoonOrBaneId] = React.useState<number | null>(null);
+  const [selectedTraitId, setSelectedTraitId] = React.useState<number | null>(null);
   const [selectedSkillId, setSelectedSkillId] = React.useState<number | null>(null);
   const players = usePlayerStore((state) => state.players);
   const skills = useSkillStore((state) => state.skills);
   const events = useEventStore((state) => state.events);
   const spells = useSpellStore((state) => state.spells);
-  const boons = useBoonStore((state) => state.boons);
+  const traits = useTraitStore((state) => state.traits);
 
   const selectedEvent = useEventStore((s) => s.getEventById(selectedEventId ?? -1));
   const selectedSpell = useSpellStore((s) => s.getSpellById(selectedSpellId ?? -1));
   const selectedSkill = useSkillStore((s) => s.getSkillById(selectedSkillId ?? -1));
+  const selectedTrait = useTraitStore((s) => s.getTraitById(selectedTraitId ?? -1));
 
   return (
     <div className="">
@@ -119,10 +122,10 @@ const HomePage: React.FC = () => {
           <TabsContent value="boons-and-banes">
             <div className='flex flex-row gap-4'>
               <div>
-                <BoonAndBaneSelector list={boons} setSelectedBoonOrBane={setSelectedBoonOrBaneId} />  
+                <TraitSelector list={traits} selectedId={selectedTraitId} setSelectedId={setSelectedTraitId} />  
               </div>
               <div>
-                {/* {selectedSpell && (<SpellForm key={selectedSpellId} spell={selectedSpell} />)} */}
+                {selectedTrait && (<TraitForm key={selectedTraitId} trait={selectedTrait} />)}
               </div>
             </div>
           </TabsContent>

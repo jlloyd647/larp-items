@@ -11,16 +11,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type { Boon } from '@/types';
-import { useBoonStore } from '@/stores/useBoonStore';
-import AddBoonOrBaneForm from '../BoonsAndBanesForm/AddBoonOrBaneForm';
+import type { Trait } from '@/types';
+import AddTraitForm from '../BoonsAndBanesForm/AddTraitForm';
 
-type BoonAndBaneSelectorProps = {
-  list: Boon[];
-  setSelectedBoon: (boon: Boon) => void;
+type TraitSelectorProps = {
+  list: Trait[];
+  selectedId: number | null;
+  setSelectedId: (id: number) => void;
 };
 
-const BoonAndBaneSelector = ({ list, setSelectedBoon }: BoonAndBaneSelector) => {
+const TraitSelector = ({ list, selectedId, setSelectedId }: TraitSelectorProps) => {
   const [search, setSearch] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -38,14 +38,14 @@ const BoonAndBaneSelector = ({ list, setSelectedBoon }: BoonAndBaneSelector) => 
       />
 
       <ScrollArea className="h-[400px] rounded-md border p-4">
-        {filteredList.map((boon) => (
-          <div className="flex items-center" key={boon.id}>
+        {filteredList.map((trait) => (
+          <div className="flex items-center" key={trait.id}>
             <Button
-              onClick={() => setSelectedBoon(boon)}
-              variant="ghost"
+              onClick={() => setSelectedId(trait.id)}
+              variant={selectedId === trait.id ? 'default' : 'ghost'}
               className="flex-grow justify-start py-2 px-4 mb-1 last:mb-0"
             >
-              {boon.name}
+              {(trait.type === 'Bane' ? 'Bane - ' : 'Boon - ') + trait.name}
             </Button>
           </div>
         ))}
@@ -61,11 +61,11 @@ const BoonAndBaneSelector = ({ list, setSelectedBoon }: BoonAndBaneSelector) => 
           <DialogHeader>
             <DialogTitle>Add Boon or Bane</DialogTitle>
           </DialogHeader>
-          <AddBoonOrBaneForm closeDialog={() => setIsAddDialogOpen(false)}/>
+          <AddTraitForm closeDialog={() => setIsAddDialogOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>
   );
 };
 
-export default BoonAndBaneSelector;
+export default TraitSelector;

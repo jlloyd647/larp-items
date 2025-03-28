@@ -4,39 +4,50 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { COURTS, ELEMENTALS } from '@/lib/consts'; // Adjust if needed
-import { useBoonStore } from '@/stores/useBoonStore';
-import { Boon } from '@/types';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { COURTS, ELEMENTALS } from '@/lib/consts';
+import { useTraitStore } from '@/stores/useTraitStore';
+import { Trait } from '@/types';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@/components/ui/radio-group';
 
-type AddBoonOrBaneFormProps = {
+type AddTraitFormProps = {
   closeDialog: () => void;
 };
 
-const AddBoonOrBaneForm = ({ closeDialog }: AddBoonOrBaneFormProps) => {
+const AddTraitForm = ({ closeDialog }: AddTraitFormProps) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [source, setSource] = useState<'Court' | 'Elemental'>('Court');
   const [sourceId, setSourceId] = useState<number | null>(null);
   const [rank, setRank] = useState(1);
+  const [type, setType] = useState<'Boon' | 'Bane'>('Boon');
 
-  const addBoon = useBoonStore((s) => s.addBoon);
-  const boons = useBoonStore((s) => s.boons);
+  const traits = useTraitStore((s) => s.traits);
+  const addTrait = useTraitStore((s) => s.addTrait);
 
   const handleSubmit = () => {
-    const nextId = Math.max(0, ...boons.map((b) => b.id)) + 1;
+    const nextId = Math.max(0, ...traits.map((t) => t.id)) + 1;
 
-    const newBoon: Boon = {
+    const newTrait: Trait = {
       id: nextId,
       name,
       description,
       source,
       sourceId: sourceId ?? 0,
       rank,
+      type,
     };
 
-    addBoon(newBoon);
+    addTrait(newTrait);
     closeDialog();
   };
 
@@ -53,6 +64,19 @@ const AddBoonOrBaneForm = ({ closeDialog }: AddBoonOrBaneFormProps) => {
       <div>
         <Label htmlFor="description">Description</Label>
         <Input id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+      </div>
+
+      <div>
+        <Label htmlFor="type">Type</Label>
+        <Select value={type} onValueChange={(val) => setType(val as 'Boon' | 'Bane')}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Boon">Boon</SelectItem>
+            <SelectItem value="Bane">Bane</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
@@ -88,23 +112,24 @@ const AddBoonOrBaneForm = ({ closeDialog }: AddBoonOrBaneFormProps) => {
       </div>
 
       <div>
-      <RadioGroup defaultValue="1" onValueChange={(val) => setRank(Number(val))}>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="1" id="rank-1" />
-          <Label htmlFor="rank-1">Rank 1</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="2" id="rank-2" />
-          <Label htmlFor="rank-2">Rank 2</Label>
-        </div>
-      </RadioGroup>
+        <Label>Rank</Label>
+        <RadioGroup defaultValue="1" onValueChange={(val) => setRank(Number(val))}>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="1" id="rank-1" />
+            <Label htmlFor="rank-1">Rank 1</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="2" id="rank-2" />
+            <Label htmlFor="rank-2">Rank 2</Label>
+          </div>
+        </RadioGroup>
       </div>
 
       <Button disabled={isDisabled} onClick={handleSubmit}>
-        Add Boon
+        Add Trait
       </Button>
     </div>
   );
 };
 
-export default AddBoonOrBaneForm;
+export default AddTraitForm;

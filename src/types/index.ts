@@ -33,6 +33,7 @@ export type Player = {
   emergencyContactNumber?: string | null;
   email?: string | null;
   liabilityWaiverSigned?: boolean | null;
+  inactive?: boolean;
 };
 
 export type Character = {
@@ -62,6 +63,7 @@ export type Character = {
   characterRace: string;
   boons?: number[];
   banes?: number[];
+  traits?: number[];
 }
 
 export type Skill = {
@@ -111,4 +113,24 @@ export type Bane = {
   source: 'Court' | 'Elemental';
   sourceId: number;
   rank: number;
+}
+
+export type Trait = {
+  id: number;
+  name: string;
+  description: string;
+  source: 'Court' | 'Elemental';
+  sourceId: number;
+  rank: number;
+  type: 'Boon' | 'Bane'; // This will help differentiate between the two types  
+}
+
+export type BoonOrBane = {
+  id: number;
+  name: string;
+  description: string;
+  source: 'Court' | 'Elemental';
+  sourceId: number;
+  rank: number;
+  type: 'Boon' | 'Bane'; // This will help differentiate between the two types
 }

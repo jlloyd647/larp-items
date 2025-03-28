@@ -7,6 +7,7 @@ type SkillState = {
   getSkillById: (id: number) => Skill | undefined;
   getSkillsByIds: (ids: number[]) => Skill[];
   updateSkill: (updatedSkill: Skill) => void;
+  deleteSkill: (skillId: number) => void;
 };
 
 const skillData: Skill[] = [
@@ -139,6 +140,11 @@ export const useSkillStore = create<SkillState>()(
           skills: state.skills.map((skill) =>
             skill.id === updatedSkill.id ? updatedSkill : skill
           ),
+        })),
+
+      deleteSkill: (skillId: number) =>
+        set((state) => ({
+          skills: state.skills.filter((s) => s.id !== skillId),
         })),
     }),
     {

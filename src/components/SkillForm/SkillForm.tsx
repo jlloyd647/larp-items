@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Tabs,
   TabsList,
@@ -12,13 +12,23 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
+  CardFooter,
 } from '../ui/card';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Textarea } from '../ui/textarea';
+import { Button } from '../ui/button';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from '../ui/dialog';
 
 import type { Skill } from '@/types';
 import SkillEditForm from './SkillEditForm';
+import { useCharacterStore } from '@/stores/useCharacterStore';
+import { useSkillStore } from '@/stores/useSkillStore';
 
 type SkillFormProps = {
   skill: Skill;
@@ -26,6 +36,15 @@ type SkillFormProps = {
 
 export const SkillForm = ({ skill }: SkillFormProps) => {
   const [tab, setTab] = useState<'view' | 'edit'>('view');
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const deleteSkill = useSkillStore((state) => state.deleteSkill);
+  const characterStore = useCharacterStore.getState();
+  const charactersWithSkill = characterStore.characters.filter((char) =>
+    char.skills.some((s) => s.skillId === skill.id)
+  );
+  
+  const isSkillInUse = charactersWithSkill.length > 0;
 
   const [name, setName] = useState(skill?.name);
   const [desc, setDesc] = useState(skill?.desc);
@@ -59,6 +78,56 @@ export const SkillForm = ({ skill }: SkillFormProps) => {
           </TabsContent>
         </Tabs>
       </CardContent>
+
+      <CardFooter className="justify-end">
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="destructive">Delete Skill</Button>
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {isSkillInUse ? 'Cannot Delete Skill' : 'Confirm Delete'}
+              </DialogTitle>
+            </DialogHeader>
+
+            {isSkillInUse ? (
+              <div className="text-sm text-muted-foreground">
+                <p>This skill is currently used by the following characters:</p>
+                <ul className="mt-2 list-disc pl-6 text-sm text-red-600">
+                  {charactersWithSkill.map((char) => (
+                    <li key={char.id}>{char.name}</li>
+                  ))}
+                </ul>
+                <p className="mt-2">Please remove it before deletion.</p>
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                <p>
+                  Are you sure you want to delete <strong>{skill.name}</strong>? This action cannot be undone.
+                </p>
+              </div>
+            )}
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  if (!isSkillInUse) deleteSkill(skill.id);
+                  setDialogOpen(false);
+                }}
+                disabled={isSkillInUse}
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>  
+        </Dialog>
+      </CardFooter>  
     </Card>
   );
 };

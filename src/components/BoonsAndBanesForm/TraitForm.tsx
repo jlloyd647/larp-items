@@ -17,30 +17,30 @@ import {
 import { Button } from '../ui/button';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 
-import type { Spell } from '@/types';
-import { useSpellStore } from '@/stores/useSpellStore';
+import type { Trait } from '@/types';
+import { useTraitStore } from '@/stores/useTraitStore';
 import { useCharacterStore } from '@/stores/useCharacterStore';
 
-type SpellFormProps = {
-  spell: Spell;
+type TraitFormProps = {
+  trait: Trait;
 };
 
-export const SpellForm = ({ spell }: SpellFormProps) => {
+export const TraitForm = ({ trait }: TraitFormProps) => {
   const [tab, setTab] = useState<'view' | 'edit'>('view');
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const deleteSpell = useSpellStore((state) => state.deleteSpell);
+  const deleteTrait = useTraitStore((state) => state.deleteTrait);
   const characters = useCharacterStore((state) => state.characters);
 
-  const charactersWithSpell = characters.filter((char) =>
-    char.spells?.some((s) => s.spellId === spell.id)
+  const charactersWithTrait = characters.filter((char) =>
+    char.boons?.some((t) => t === trait.id) || char.banes?.some((t) => t === trait.id)
   );
-  const isSpellInUse = charactersWithSpell.length > 0;
+  const isTraitInUse = charactersWithTrait.length > 0;
 
   return (
     <Card className="w-[600px]">
       <CardHeader>
-        <CardTitle>{spell.name}</CardTitle>
+        <CardTitle>{trait.name}</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={tab} onValueChange={(val) => setTab(val as 'view' | 'edit')}>
@@ -51,14 +51,11 @@ export const SpellForm = ({ spell }: SpellFormProps) => {
 
           <TabsContent value="view">
             <div className="space-y-2 text-sm">
-              <p><strong>Description:</strong> {spell.description}</p>
-              <p><strong>Category:</strong> {spell.category}</p>
-              <p><strong>XP Cost:</strong> {spell.xpCost}</p>
-              <p><strong>Skill Cost:</strong> {spell.skillCost}</p>
-              {spell.specialEffect && (
-                <p><strong>Special Effect:</strong> {spell.specialEffect}</p>
-              )}
-              <p><strong>Rank:</strong> {spell.rank}</p>
+              <p><strong>Description:</strong> {trait.description}</p>
+              <p><strong>Type:</strong> {trait.type}</p>
+              <p><strong>Source:</strong> {trait.source}</p>
+              <p><strong>Source ID:</strong> {trait.sourceId}</p>
+              <p><strong>Rank:</strong> {trait.rank}</p>
             </div>
           </TabsContent>
 
@@ -71,21 +68,21 @@ export const SpellForm = ({ spell }: SpellFormProps) => {
       <CardFooter className="justify-end">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="destructive">Delete Spell</Button>
+            <Button variant="destructive">Delete Trait</Button>
           </DialogTrigger>
 
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {isSpellInUse ? 'Cannot Delete Spell' : 'Confirm Delete'}
+                {isTraitInUse ? 'Cannot Delete Trait' : 'Confirm Delete'}
               </DialogTitle>
             </DialogHeader>
 
-            {isSpellInUse ? (
+            {isTraitInUse ? (
               <div className="text-sm text-muted-foreground">
-                <p>This spell is currently used by the following characters:</p>
+                <p>This trait is currently used by the following characters:</p>
                 <ul className="mt-2 list-disc pl-6 text-sm text-red-600">
-                  {charactersWithSpell.map((char) => (
+                  {charactersWithTrait.map((char) => (
                     <li key={char.id}>{char.name}</li>
                   ))}
                 </ul>
@@ -94,7 +91,7 @@ export const SpellForm = ({ spell }: SpellFormProps) => {
             ) : (
               <div className="text-sm text-muted-foreground">
                 <p>
-                  Are you sure you want to delete <strong>{spell.name}</strong>? This action cannot be undone.
+                  Are you sure you want to delete <strong>{trait.name}</strong>? This action cannot be undone.
                 </p>
               </div>
             )}
@@ -106,10 +103,10 @@ export const SpellForm = ({ spell }: SpellFormProps) => {
               <Button
                 variant="destructive"
                 onClick={() => {
-                  if (!isSpellInUse) deleteSpell(spell.id);
+                  if (!isTraitInUse) deleteTrait(trait.id);
                   setDialogOpen(false);
                 }}
-                disabled={isSpellInUse}
+                disabled={isTraitInUse}
               >
                 Delete
               </Button>
@@ -121,4 +118,4 @@ export const SpellForm = ({ spell }: SpellFormProps) => {
   );
 };
 
-export default SpellForm;
+export default TraitForm;
