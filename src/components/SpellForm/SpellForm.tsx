@@ -20,6 +20,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import type { Spell } from '@/types';
 import { useSpellStore } from '@/stores/useSpellStore';
 import { useCharacterStore } from '@/stores/useCharacterStore';
+import SpellEditForm from './SpellEditForm';
 
 type SpellFormProps = {
   spell: Spell;
@@ -63,8 +64,7 @@ export const SpellForm = ({ spell }: SpellFormProps) => {
           </TabsContent>
 
           <TabsContent value="edit">
-            {/* Editing inputs can be placed here in the future */}
-            <p className="text-muted-foreground text-sm">Editing not yet implemented.</p>
+            <SpellEditForm spellId={spell.id} />
           </TabsContent>
         </Tabs>
       </CardContent>

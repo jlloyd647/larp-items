@@ -4,11 +4,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useSpellStore } from '@/stores/useSpellStore';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { Spell } from '@/types';
 
 type SpellEditFormProps = {
   spellId: number;
 };
+
+const categoryOptions = ['Arcane Magic', 'Artificing', 'Shadow Magic', 'Wild Magic'];
 
 const SpellEditForm = ({ spellId }: SpellEditFormProps) => {
   const spell = useSpellStore((state) => state.getSpellById(spellId));
@@ -64,7 +67,18 @@ const SpellEditForm = ({ spellId }: SpellEditFormProps) => {
       </div>
       <div>
         <Label>Category</Label>
-        <Input value={form.category} onChange={(e) => handleChange('category', e.target.value)} />
+        <Select value={form.category} onValueChange={(value) => handleChange('category', value)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categoryOptions.map((option) => (
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div>
         <Label>XP Cost</Label>
