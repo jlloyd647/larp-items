@@ -20,6 +20,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import type { Trait } from '@/types';
 import { useTraitStore } from '@/stores/useTraitStore';
 import { useCharacterStore } from '@/stores/useCharacterStore';
+import TraitEditForm from './TraitEditForm';
 
 type TraitFormProps = {
   trait: Trait;
@@ -60,8 +61,7 @@ export const TraitForm = ({ trait }: TraitFormProps) => {
           </TabsContent>
 
           <TabsContent value="edit">
-            {/* Editing inputs can be placed here in the future */}
-            <p className="text-muted-foreground text-sm">Editing not yet implemented.</p>
+            <TraitEditForm traitId={trait.id} />
           </TabsContent>
         </Tabs>
       </CardContent>

@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import type { Trait } from '@/types';
-import AddTraitForm from '../BoonsAndBanesForm/AddTraitForm';
+import AddTraitForm from '../TraitForm/AddTraitForm';
 
 type TraitSelectorProps = {
   list: Trait[];

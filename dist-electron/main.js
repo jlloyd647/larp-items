@@ -1,52 +1,35 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import path from "path";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-if (process.platform === "win32") {
-  app.setAppUserModelId(app.getName());
-}
-const isSingleInstance = app.requestSingleInstanceLock();
-if (!isSingleInstance) {
-  app.quit();
-  process.exit(0);
-}
-let mainWindow = null;
-async function createWindow() {
-  mainWindow = new BrowserWindow({
+import { app as e, BrowserWindow as o, ipcMain as c } from "electron";
+import t from "path";
+import { fileURLToPath as l } from "url";
+const d = l(import.meta.url), p = t.dirname(d);
+process.platform === "win32" && e.setAppUserModelId(e.getName());
+const w = e.requestSingleInstanceLock();
+w || (e.quit(), process.exit(0));
+let n = null;
+async function r() {
+  n = new o({
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: false,
-      contextIsolation: true
+      preload: t.join(p, "preload.js"),
+      nodeIntegration: !1,
+      contextIsolation: !0
     }
-  });
-  if (process.env.VITE_DEV_SERVER_URL) {
-    await mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
-    mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadFile(path.join(process.env.DIST || "dist", "index.html"));
-  }
+  }), process.env.VITE_DEV_SERVER_URL ? (await n.loadURL(process.env.VITE_DEV_SERVER_URL), n.webContents.openDevTools()) : n.loadFile(t.join(process.env.DIST || "dist", "index.html"));
 }
-app.whenReady().then(createWindow);
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+e.whenReady().then(r);
+e.on("window-all-closed", () => {
+  process.platform !== "darwin" && e.quit();
 });
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+e.on("activate", () => {
+  o.getAllWindows().length === 0 && r();
 });
-ipcMain.on("print-character-card", () => {
-  const win = BrowserWindow.getFocusedWindow();
-  if (!win) return;
-  win.webContents.print({
-    silent: true,
-    printBackground: true,
-    landscape: true,
+c.on("print-character-card", () => {
+  const i = o.getFocusedWindow();
+  i && i.webContents.print({
+    silent: !0,
+    printBackground: !0,
+    landscape: !0,
     margins: { marginType: "none" },
     // 👈 required
     pageSize: {
@@ -55,9 +38,7 @@ ipcMain.on("print-character-card", () => {
       height: 105e3
       // 105mm
     }
-  }, (success, errorType) => {
-    if (!success) {
-      console.error("Failed to print character card:", errorType);
-    }
+  }, (a, s) => {
+    a || console.error("Failed to print character card:", s);
   });
 });
