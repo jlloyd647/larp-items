@@ -21,7 +21,7 @@ import GistSyncPanel from '@/components/DataSync/GistSyncPanel';
 import { useBoonStore } from '@/stores/useBoonStore';
 import TraitSelector from '@/components/Selectors/TraitSelector';
 import { useTraitStore } from '@/stores/useTraitStore';
-import TraitForm from '@/components/BoonsAndBanesForm/TraitForm';
+import TraitForm from '@/components/TraitForm/TraitForm';
 import { useCharacterStore } from '@/stores/useCharacterStore';
 
 const HomePage: React.FC = () => {
