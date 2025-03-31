@@ -4,6 +4,7 @@ import type { Trait } from '@/types';
 
 export type TraitState = {
   traits: Trait[];
+  setTraits: (traits: Trait[]) => void;
   addTrait: (trait: Trait) => void;
   updateTrait: (trait: Trait) => void;
   deleteTrait: (id: number) => void;
@@ -14,6 +15,8 @@ export const useTraitStore = create<TraitState>()(
   persist(
     (set, get) => ({
       traits: [],
+
+      setTraits: (traits: Trait[]) => set({ traits }),
 
       addTrait: (trait) =>
         set((state) => ({

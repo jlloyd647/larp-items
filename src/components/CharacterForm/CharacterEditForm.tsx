@@ -11,15 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Character } from '@/types';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '../ui/dialog';
 import AddSkillScrollList from './AddSkillScrollList';
-import { useCharacterStore } from '@/stores/useCharacterStore';
 import RemoveSkillScrollList from './RemoveSkillScrollList';
-import { COURTS } from '@/lib/consts';
+import { COURTS, ELEMENTALS } from '@/lib/consts';
+import { useCharacterStore } from '@/stores/useCharacterStore';
+import type { Character } from '@/types';
 
 type CharacterEditFormProps = {
-  character: Character;
+  characterId: number;
 };
 
 const pathOptions = ['The Bargained', 'The Lost', 'The Seeker', 'The Taken'];
@@ -27,34 +27,45 @@ const prologueOptions = ['Established', 'New'];
 const raceOptions = ['Kith', 'Air Elemental', 'Earth Elemental', 'Fire Elemental', 'Neon Elemental', 'Water Elemental'];
 const courtOptions = ['Courtless', 'Catalytic', 'Feral', 'Radiant', 'Umbral', 'Undying'];
 
-
-const CharacterEditForm = ({ character }: CharacterEditFormProps) => {
-  const [form, setForm] = useState({ ...character });
-  const [hasChanges, setHasChanges] = useState(false);
+const CharacterEditForm = ({ characterId }: CharacterEditFormProps) => {
   const updateCharacter = useCharacterStore((s) => s.updateCharacter);
+
+  const liveCharacter = useCharacterStore((state) =>
+    state.characters.find((c) => c.id === characterId)
+  );
+
+  const [form, setForm] = useState<Character | null>(liveCharacter ?? null);
+  const [hasChanges, setHasChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setHasChanges(JSON.stringify(form) !== JSON.stringify(character));
-  }, [form, character]);
+    if (liveCharacter) setForm({ ...liveCharacter });
+  }, [liveCharacter]);
+
+  useEffect(() => {
+    if (!form || !liveCharacter) return;
+    setHasChanges(JSON.stringify(form) !== JSON.stringify(liveCharacter));
+  }, [form, liveCharacter]);
+
+  if (!form) return null;
 
   const updateField = <K extends keyof Character>(key: K, value: Character[K]) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    setForm((prev) => (prev ? { ...prev, [key]: value } : prev));
   };
 
   const handleSave = async () => {
+    if (!form) return;
     setIsSaving(true);
     try {
-      updateCharacter(form); // Simulate async if needed
+      updateCharacter(form);
       setHasChanges(false);
-      // Optional toast here
     } finally {
       setIsSaving(false);
     }
   };
 
   const changedClass = (key: keyof Character) =>
-    form[key] !== character[key] ? 'border-yellow-500' : '';
+    form[key] !== liveCharacter?.[key] ? 'border-yellow-500' : '';
 
   return (
     <form className="space-y-6">
@@ -90,7 +101,14 @@ const CharacterEditForm = ({ character }: CharacterEditFormProps) => {
           <Label>Race</Label>
           <Select
             value={form.characterRace ?? ''}
-            onValueChange={(val) => updateField('characterRace', val)}
+            onValueChange={(val) => {
+              updateField('characterRace', val);
+              val === 'Air Elemental' && updateField('elemental', 1);
+              val === 'Earth Elemental' && updateField('elemental', 2);
+              val === 'Fire Elemental' && updateField('elemental', 3);
+              val === 'Neon Elemental' && updateField('elemental', 4);
+              val === 'Water Elemental' && updateField('elemental', 5);
+            }}
           >
             <SelectTrigger className={changedClass('characterRace')}>
               <SelectValue placeholder="Select race" />
@@ -218,39 +236,39 @@ const CharacterEditForm = ({ character }: CharacterEditFormProps) => {
 
       {/* Save Button */}
       <div className="flex justify-end pt-4">
-      <Button
-        disabled={!hasChanges || isSaving}
-        onClick={handleSave}
-        variant={hasChanges ? 'default' : 'secondary'}
-      >
-        {isSaving ? (
-          <div className="flex items-center gap-2">
-            <svg
-              className="animate-spin h-4 w-4 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              ></path>
-            </svg>
-            Saving...
-          </div>
-        ) : (
-          'Save Changes'
-        )}
-      </Button>
+        <Button
+          disabled={!hasChanges || isSaving}
+          onClick={handleSave}
+          variant={hasChanges ? 'default' : 'secondary'}
+        >
+          {isSaving ? (
+            <div className="flex items-center gap-2">
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              Saving...
+            </div>
+          ) : (
+            'Save Changes'
+          )}
+        </Button>
       </div>
     </form>
   );

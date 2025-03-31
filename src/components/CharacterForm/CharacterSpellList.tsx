@@ -3,6 +3,7 @@
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useSpellStore } from '@/stores/useSpellStore';
+import { useCharacterStore } from '@/stores/useCharacterStore';
 import AddSpellScrollList from './AddSpellScrollList';
 import RemoveSpellScrollList from './RemoveSpellScrollList';
 import type { Character } from '@/types';
@@ -13,6 +14,10 @@ type CharacterSpellListProps = {
 
 const CharacterSpellList = ({ character }: CharacterSpellListProps) => {
   const getSpellById = useSpellStore((state) => state.getSpellById);
+  const updatedCharacter = useCharacterStore((state) =>
+    state.characters.find((c) => c.id === character.id)
+  );
+  const characterToUse = updatedCharacter || character;
 
   return (
     <>
@@ -44,13 +49,13 @@ const CharacterSpellList = ({ character }: CharacterSpellListProps) => {
         </Dialog>
       </div>
 
-      {character.spells?.length === 0 ? (
+      {characterToUse.spells?.length === 0 ? (
         <p className="text-sm italic text-muted-foreground">
           This character doesn't know any spells yet.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-          {character.spells.map((spellObj) => {
+          {characterToUse?.spells?.map((spellObj) => {
             const spell = getSpellById(spellObj.spellId);
             return (
               <div

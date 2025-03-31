@@ -1,6 +1,8 @@
 'use client';
 
 import type { Character } from '@/types';
+import { useCharacterStore } from '@/stores/useCharacterStore';
+import { useSkillStore } from '@/stores/useSkillStore';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import AddSkillScrollList from './AddSkillScrollList';
@@ -12,9 +14,13 @@ type CharacterSkillListProps = {
 };
 
 const CharacterSkillList = ({
-  character,
+  character: initialCharacter,
   getSkillNameWithRank,
 }: CharacterSkillListProps) => {
+  const characters = useCharacterStore((state) => state.characters);
+
+  const character = characters.find((c) => c.id === initialCharacter.id) ?? initialCharacter;
+
   return (
     <>
       <p className="text-sm text-muted-foreground mb-2">Skills</p>
@@ -38,13 +44,14 @@ const CharacterSkillList = ({
           </DialogContent>
         </Dialog>
       </div>
+
       {character.skills?.length === 0 ? (
         <p className="text-sm italic text-muted-foreground">
           This character doesn't know any skills yet.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-          {character.skills.map((skillObj) => (
+          {character?.skills?.map((skillObj) => (
             <div
               key={skillObj.skillId}
               className="rounded border px-3 py-1 text-sm bg-muted"

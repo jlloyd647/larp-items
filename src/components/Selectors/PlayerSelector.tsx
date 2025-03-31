@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { ChevronsUpDown } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -25,18 +27,23 @@ import AddPlayerForm from '@/components/PlayerForm/AddPlayerForm';
 
 type PlayerSelectorProps = {
   list: Player[];
-  setSelectedPlayer: (player: Player | null) => void;
-  setSelectedCharacter: (character: Character | null) => void;
+  selectedPlayerId: number | null; // Changed to number for consistency with player.id
+  setSelectedPlayerId: (id: number) => void;
+  selectedCharacterId: number | null;
+  setSelectedCharacterId: (id: number | null) => void;
 };
 
 const PlayerSelector = ({
   list,
-  setSelectedPlayer,
-  setSelectedCharacter,
+  selectedPlayerId,
+  setSelectedPlayerId,
+  selectedCharacterId,
+  setSelectedCharacterId,
 }: PlayerSelectorProps) => {
   const [search, setSearch] = useState('');
   const [expandedPlayerId, setExpandedPlayerId] = useState<number | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [showInactive, setShowInactive] = useState(false);
   const characters = useCharacterStore((state) => state.characters);
 
   const getCharactersForPlayer = useCharacterStore(
@@ -44,7 +51,9 @@ const PlayerSelector = ({
   );
 
   const filteredList = list.filter((player) =>
-    player.name.toLowerCase().includes(search.toLowerCase())
+    showInactive
+      ? player.inactive === true
+      : !player.inactive && player.name.toLowerCase().includes(search.toLowerCase())
   );
 
   // Watch for changes in character list
@@ -82,11 +91,11 @@ const PlayerSelector = ({
               <div className="flex items-center">
                 <Button
                   onClick={() => {
-                    setSelectedPlayer(player)
-                    setSelectedCharacter(null)
+                    setSelectedPlayerId(player.id)
+                    setSelectedCharacterId(null)
                     }
                   }
-                  variant="ghost"
+                  variant={selectedPlayerId === player.id ? 'default' : 'ghost'}
                   className="flex-grow justify-start py-2 px-4 mb-1 last:mb-0"
                 >
                   {player.name}
@@ -104,12 +113,12 @@ const PlayerSelector = ({
                       <Button
                         key={character.id}
                         onClick={() => {
-                          setSelectedCharacter(character)
-                          setSelectedPlayer(null)
+                          setSelectedCharacterId(character.id)
+                          setSelectedPlayerId(0)
                         }
 
                         }
-                        variant="ghost"
+                        variant={selectedCharacterId === character.id ? 'default' : 'ghost'}
                         className="w-full justify-start py-2 px-4 mb-1 last:mb-0"
                       >
                         {character.name}
@@ -126,10 +135,24 @@ const PlayerSelector = ({
           );
         })}
       </ScrollArea>
+      <div className="mb-2 flex items-center space-x-2 justify-end">
+        <Label htmlFor="showInactive" className="text-sm cursor-pointer">
+          Show Inactive Players
+        </Label>
+        <Checkbox
+          id="showInactive"
+          checked={showInactive}
+          onCheckedChange={(checked) => {
+            setShowInactive(!!checked);
+            setSelectedPlayerId(0);
+            setSelectedCharacterId(null);
+          }}
+        />
+      </div>
 
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="mt-4 w-[300px]">
+          <Button variant="outline" className="w-[300px]">
             Add New Player
           </Button>
         </DialogTrigger>
@@ -140,8 +163,8 @@ const PlayerSelector = ({
 
           <AddPlayerForm
             closeDialog={() => setIsAddDialogOpen(false)}
-            setSelectedPlayer={setSelectedPlayer}
-            setSelectedCharacter={setSelectedCharacter}
+            setSelectedPlayerId={setSelectedPlayerId}
+            setSelectedCharacter={setSelectedCharacterId}
           />
         </DialogContent>
       </Dialog>

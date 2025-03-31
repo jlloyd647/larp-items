@@ -320,11 +320,11 @@ export const COURTS = [
 ] as const;
 
 export const ELEMENTALS = [
-  { id: 1, name: "Air" },
-  { id: 2, name: "Earth" },
-  { id: 3, name: "Fire" },
-  { id: 4, name: "Neon" },
-  { id: 5, name: "Water" },
+  { id: 1, name: "Air Elemental" },
+  { id: 2, name: "Earth Elemental" },
+  { id: 3, name: "Fire Elemental" },
+  { id: 4, name: "Neon Elemental" },
+  { id: 5, name: "Water Elemental" },
 ] as const;
 
 export const SKILLS = [

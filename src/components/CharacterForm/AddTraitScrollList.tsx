@@ -27,9 +27,15 @@ const AddTraitScrollList = ({ characterId }: AddTraitScrollListProps) => {
 
   if (!character) return <div>Character not found</div>;
 
-  const filteredTraits = traits.filter((trait) =>
-    trait.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredTraits = traits.filter((trait) => {
+    console.log(character);
+    const matchesSearch = trait.name.toLowerCase().includes(search.toLowerCase());
+    const matchesSource =
+      (trait.source === 'Court' && trait.sourceId == character.court) ||
+      (trait.source === 'Elemental' && trait.sourceId == character.elemental);
+  
+    return matchesSearch && matchesSource;
+  });
 
   const handleAdd = () => {
     if (!selected) return;

@@ -7,13 +7,13 @@ import type { Player, Character } from '@/types/index';
 
 type AddPlayerFormProps = {
   closeDialog: () => void;
-  setSelectedPlayer: (player: Player) => void;
-  setSelectedCharacter: (char: Character | null) => void;
+  setSelectedPlayerId: (id: number) => void; 
+  setSelectedCharacter: (id: number | null) => void;
 };
 
 const AddPlayerForm = ({
   closeDialog,
-  setSelectedPlayer,
+  setSelectedPlayerId,
   setSelectedCharacter,
 }: AddPlayerFormProps) => {
   const [name, setName] = useState('');
@@ -31,11 +31,11 @@ const AddPlayerForm = ({
       email,
       emergencyContactName: null,
       emergencyContactNumber: null,
-      liabilityWaiver: false,
+      liabilityWaiverSigned: false,
     };
 
     addPlayer(newPlayer);
-    setSelectedPlayer(newPlayer);
+    setSelectedPlayerId(newPlayer.id);
     setSelectedCharacter(null);
     closeDialog();
   };

@@ -11,7 +11,7 @@ import {
 import { useSpellStore } from '@/stores/useSpellStore';
 import type { Character } from "@/types";
 import CharacterSpellList from "./CharacterSpellList";
-import CharacterSkillList from "./CharacterSkills";
+import CharacterSkillList from "./CharacterSkillList";
 import CharacterBoonList from "./CharacterBoonList";
 import CharacterTraitList from "./CharacterTraitList";
 

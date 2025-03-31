@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
@@ -9,19 +9,52 @@ import type { Player } from '@/types';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 
 type PlayerEditFormProps = {
-  player: Player;
+  playerId: number;
 };
 
-export const PlayerEditForm = ({ player }: PlayerEditFormProps) => {
-  const [name, setName] = useState(player.name);
-  const [email, setEmail] = useState(player.email ?? '');
-  const [emergencyContactName, setEmergencyContactName] = useState(player.emergencyContactName ?? '');
-  const [emergencyContactNumber, setEmergencyContactNumber] = useState(player.emergencyContactNumber ?? '');
-  const [waiverSigned, setWaiverSigned] = useState(player.liabilityWaiverSigned ?? false);
+export const PlayerEditForm = ({ playerId }: PlayerEditFormProps) => {
+  const player = usePlayerStore((state) =>
+    state.players.find((p) => Number(p.id) === playerId)
+  );
+
+  const [name, setName] = useState(player?.name ?? '');
+  const [email, setEmail] = useState(player?.email ?? '');
+  const [emergencyContactName, setEmergencyContactName] = useState(player?.emergencyContactName ?? '');
+  const [emergencyContactNumber, setEmergencyContactNumber] = useState(player?.emergencyContactNumber ?? '');
+  const [waiverSigned, setWaiverSigned] = useState(player?.liabilityWaiverSigned ?? false);
+  const [inactive, setInactive] = useState(player?.inactive ?? false);
+  const [isDirty, setIsDirty] = useState(false);
 
   const updatePlayer = usePlayerStore((state) => state.updatePlayer);
 
+  useEffect(() => {
+    if (!player) return;
+
+    const dirty =
+      name !== player.name ||
+      email !== (player.email ?? '') ||
+      emergencyContactName !== (player.emergencyContactName ?? '') ||
+      emergencyContactNumber !== (player.emergencyContactNumber ?? '') ||
+      waiverSigned !== (player.liabilityWaiverSigned ?? false) ||
+      inactive !== (player.inactive ?? false);
+
+    setIsDirty(dirty);
+  }, [name, email, emergencyContactName, emergencyContactNumber, waiverSigned, inactive, player]);
+
+  useEffect(() => {
+    if (!player) return;
+
+    setName(player.name);
+    setEmail(player.email ?? '');
+    setEmergencyContactName(player.emergencyContactName ?? '');
+    setEmergencyContactNumber(player.emergencyContactNumber ?? '');
+    setWaiverSigned(player.liabilityWaiverSigned ?? false);
+    setInactive(player.inactive ?? false);
+  }, [player]);
+
   const handleSave = () => {
+    if (!player) return;
+
     const updatedPlayer: Player = {
       ...player,
       name,
@@ -29,11 +62,14 @@ export const PlayerEditForm = ({ player }: PlayerEditFormProps) => {
       emergencyContactName,
       emergencyContactNumber,
       liabilityWaiverSigned: waiverSigned,
+      inactive,
     };
 
     updatePlayer(updatedPlayer);
-    // You could also add a toast or visual confirmation here
+    setIsDirty(false);
   };
+
+  if (!player) return null;
 
   return (
     <form
@@ -43,42 +79,47 @@ export const PlayerEditForm = ({ player }: PlayerEditFormProps) => {
         handleSave();
       }}
     >
-      <div>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      {/* Row 1: Name + Email */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div>
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      {/* Row 2: Emergency Contact Name + Number */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="emergencyName">Emergency Contact Name</Label>
+          <Input
+            id="emergencyName"
+            value={emergencyContactName}
+            onChange={(e) => setEmergencyContactName(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="emergencyNumber">Emergency Contact Number</Label>
+          <Input
+            id="emergencyNumber"
+            value={emergencyContactNumber}
+            onChange={(e) => setEmergencyContactNumber(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div>
-        <Label htmlFor="emergencyName">Emergency Contact Name</Label>
-        <Input
-          id="emergencyName"
-          value={emergencyContactName}
-          onChange={(e) => setEmergencyContactName(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="emergencyNumber">Emergency Contact Number</Label>
-        <Input
-          id="emergencyNumber"
-          value={emergencyContactNumber}
-          onChange={(e) => setEmergencyContactNumber(e.target.value)}
-        />
-      </div>
-
+      {/* Row 3: Waiver */}
       <div className="flex items-center space-x-2">
         <Checkbox
           id="waiver"
@@ -88,8 +129,21 @@ export const PlayerEditForm = ({ player }: PlayerEditFormProps) => {
         <Label htmlFor="waiver">Liability Waiver Signed</Label>
       </div>
 
-      <div className="pt-4">
-        <Button type="submit">Save Changes</Button>
+      {/* Row 4: Inactive checkbox */}
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="inactive"
+          checked={inactive}
+          onCheckedChange={(checked) => setInactive(!!checked)}
+        />
+        <Label htmlFor="inactive">Inactive</Label>
+      </div>
+
+      {/* Save Button: bottom right */}
+      <div className="flex justify-end pt-4">
+        <Button type="submit" disabled={!isDirty}>
+          Save Changes
+        </Button>
       </div>
     </form>
   );

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Card,
   CardContent,
-  CardFooter,
+  CardTitle,
+  CardHeader
 } from '../ui/card';
 import {
   Tabs,
@@ -13,28 +14,49 @@ import {
   TabsContent,
 } from '../ui/tabs';
 
-import type { Character, Player } from '@/types';
+import type { Character } from '@/types';
 
 import CharacterView from './CharacterView';
 import CharacterEditForm from './CharacterEditForm';
 
-import { useSkillStore } from '@/stores/useSkillStore';
 import CharacterPrintCard from './CharacterPrintCard';
+import CharacterSpellPrintCard from './CharacterSpellPrintCard';
 import { Button } from '../ui/button';
+import CharacterDelete from './CharacterDelete';
+import { useCharacterStore } from '@/stores/useCharacterStore';
 
 type CharacterFormProps = {
-  selectedCharacter: Character;
+  character: Character;
 };
 
-export const CharacterForm = ({ selectedCharacter }: CharacterFormProps) => {
+export const CharacterForm = ({ character }: CharacterFormProps) => {
   const [tab, setTab] = useState<'view' | 'edit' | 'card'>('view');
+  const [body, setBody] = useState<number>(15);
+  const [skill, setSkill] = useState<number>(15);
   const printRef = useRef<HTMLDivElement>(null);
+  const printSpellRef = useRef<HTMLDivElement>(null);
 
-  const getSkillById = useSkillStore((state) => state.getSkillById);
-  const getSkillNameWithRank = (skillId: number, rank: number) => {
-    const skill = getSkillById(skillId);
-    return skill ? `${skill.name} R${rank}` : `Skill ${skillId} R${rank}`;
-  };
+  const lesserStaminaRanks = useCharacterStore((state) => {
+    return character?.skills.find((s) => s.skillId === 115)?.rank ?? 0;
+  });
+
+  useEffect(() => {
+    setBody(15 + lesserStaminaRanks * 5);
+  }, [lesserStaminaRanks]);
+
+  useEffect(() => {
+    const xp = character.xp ?? 0;
+
+    if (xp >= 150) {
+      setSkill(30);
+    } else if (xp >= 90) {
+      setSkill(25);
+    } else if (xp >= 50) {
+      setSkill(20);
+    } else {
+      setSkill(15);
+    }
+  }, [character])
 
   const handlePrint = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (!ref.current) return;
@@ -98,30 +120,47 @@ export const CharacterForm = ({ selectedCharacter }: CharacterFormProps) => {
 
   return (
     <Card className="w-[1000px] h-[500px]">
+      <CardHeader>
+        <CardTitle>{character?.name ?? 'Unnamed Character'}</CardTitle>
+      </CardHeader>
       <CardContent>
         <Tabs value={tab} onValueChange={(value) => setTab(value as 'view' | 'edit' | 'card')} className="w-full">
           <TabsList className="mb-4">
             <TabsTrigger value="view">Character View</TabsTrigger>
             <TabsTrigger value="edit">Character Edit</TabsTrigger>
             <TabsTrigger value="card">Character Card</TabsTrigger>
+            <TabsTrigger value="delete">Delete Character</TabsTrigger>
           </TabsList>
 
           <TabsContent value="view">
-            <CharacterView character={selectedCharacter} />
+            <CharacterView character={character} />
           </TabsContent>
 
           <TabsContent value="edit">
-            <CharacterEditForm character={selectedCharacter} />
+            <CharacterEditForm characterId={character.id} />
           </TabsContent>
 
           <TabsContent value="card">
-            <div ref={printRef} className="border border-gray-200 p-4">
-              <CharacterPrintCard />
-            </div>
-
             <Button onClick={() => handlePrint(printRef)}>
               🖨️ Print Character Card
             </Button>
+            {character?.spells?.length > 0 && (
+              <Button onClick={() => handlePrint(printSpellRef)} className="ml-2">
+                🖨️ Print Spell Card
+              </Button>
+            )}
+            <div ref={printRef} className="border border-gray-200 p-4">
+              <CharacterPrintCard characterId={character.id} body={body} skill={skill} />
+            </div>
+
+            {character?.spells?.length > 0 && (
+              <div ref={printSpellRef} className="border border-gray-200 p-4">
+                <CharacterSpellPrintCard characterId={character.id} />
+              </div>
+            )}
+          </TabsContent>
+          <TabsContent value="delete">
+            <CharacterDelete characterId={character.id} characterName={character.name} />
           </TabsContent>
         </Tabs>
       </CardContent>

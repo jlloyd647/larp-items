@@ -5,94 +5,30 @@ import { useSkillStore } from './useSkillStore';
 
 type CharacterState = {
   characters: Character[];
+  setCharacters: (characters: Character[]) => void;
+  getCharacterById: (id: string) => Character | undefined;
   addCharacter: (character: Character) => void;
   updateCharacter: (character: Character) => void;
   removeCharacter: (id: number) => void;
   getCharactersForPlayer: (playerId: number) => Character[];
   addSkillToCharacter: (characterId: number, skillId: number) => void;
   removeSkillFromCharacter: (characterId: number, skillId: number) => void;
+  removeSpellFromCharacter: (characterId: number, spellId: number) => void; 
+  removeTraitFromCharacter: (characterId: number, traitId: number) => void;
   getCharacterSkillRank: (characterId: number, skillId: number) => number;
   getCourtXpSpentForCharacter: (characterId: number) => number;
   getXpSpentForCharacter: (characterId: number) => number;
   addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) => void;
   addBoonToCharacter: (characterId: number, boonId: number) => void;
   removeBoonFromCharacter: (characterId: number, boonId: number) => void;
-  addTraitToCharacter: (characterId: number, trait: { id: number }) => void; // Add a trait to a character
+  addTraitToCharacter: (characterId: number, trait: { id: number }) => void;
+  deleteCharacter: (id: number) => void; 
 };
 
 export const useCharacterStore = create<CharacterState>()(
   persist(
     (set, get) => ({
-      characters: [
-        {
-          id: 1,
-          playerId: 1,
-          name: "Vanilla",
-          xp: 100,
-          courtXp: 20,
-          court: "Umbral",
-          bank: 250,
-          magicItem: "",
-          magicItemCXp: 50,
-          deaths: 0,
-          path: "",
-          prologue: "",
-          communityPoints: 0,
-          characterRace: "Kith",
-          skills: [],
-        },
-        {
-          id: 2,
-          playerId: 2,
-          name: "Calamity",
-          courtXp: 20,
-          court: "Umbral",
-          bank: 250,
-          magicItem: "",
-          magicItemCXp: 50,
-          deaths: 0,
-          path: "",
-          prologue: "",
-          communityPoints: 0,
-          characterRace: "Kith",
-          xp: 210,
-          skills: [],
-        },
-        {
-          id: 3,
-          playerId: 3,
-          name: "Ahnesti",
-          xp: 150,
-          courtXp: 20,
-          court: "Umbral",
-          bank: 250,
-          magicItem: "",
-          magicItemCXp: 50,
-          deaths: 0,
-          path: "",
-          prologue: "",
-          communityPoints: 0,
-          characterRace: "Kith",
-          skills: [],
-        },
-        {
-          id: 101,
-          playerId: 1,
-          name: "Ezekiel",
-          courtXp: 20,
-          court: "Umbral",
-          bank: 250,
-          magicItem: "",
-          magicItemCXp: 50,
-          deaths: 0,
-          path: "",
-          prologue: "",
-          communityPoints: 0,
-          characterRace: "Kith",
-          xp: 210,
-          skills: [],
-        },
-      ],
+      characters: [],
       addCharacter: (char) =>
         set((state) => ({
           characters: [
@@ -103,6 +39,10 @@ export const useCharacterStore = create<CharacterState>()(
             },
           ],
         })),
+
+      getCharacterById: (id) => get().characters.find((character) => character.id === id),
+      
+      setCharacters: (characters: Character[]) => set({ characters }),
 
       updateCharacter: (character) =>
         set((state) => ({
@@ -116,8 +56,10 @@ export const useCharacterStore = create<CharacterState>()(
           characters: state.characters.filter((c) => c.id !== id),
         })),
 
-      getCharactersForPlayer: (playerId) =>
-        get().characters.filter((c) => c.playerId === playerId),
+      getCharactersForPlayer: (playerId: number) =>
+        get().characters.filter(
+          (char) => char.playerId === playerId && !char.deleted
+        ),
 
       addSkillToCharacter: (characterId, skillId, cxpUsed = 0) => {
         const skill = useSkillStore.getState().getSkillById(skillId);
@@ -197,17 +139,57 @@ export const useCharacterStore = create<CharacterState>()(
         return skill?.rank ?? 0;
       },
       
-      removeSkillFromCharacter: (characterId, skillId) =>
+      removeSkillFromCharacter: (characterId, skillId) => {
+        set((state) => {
+          return {
+            characters: state.characters.map((character) => {
+              if (character.id !== characterId) return character;
+      
+              const updatedSkills = character.skills.map((skill) => {
+                if (skill.skillId === skillId) {
+                  // Decrease rank if > 1, otherwise we’ll remove later
+                  return skill.rank > 1
+                    ? { ...skill, rank: skill.rank - 1 }
+                    : null; // mark for removal
+                }
+                return skill;
+              }).filter(Boolean) as typeof character.skills;
+      
+              return {
+                ...character,
+                skills: updatedSkills,
+              };
+            }),
+          };
+        });
+      },
+      
+
+      removeSpellFromCharacter: (characterId, spellId) => {
         set((state) => ({
           characters: state.characters.map((char) =>
             char.id === characterId
               ? {
-              ...char,
-              skills: char.skills.filter((s) => s.skillId !== skillId),
-            }
-          : char
-        ),
-      })),
+                  ...char,
+                  spells: char.spells?.filter((s) => s.spellId !== spellId) ?? [],
+                }
+              : char
+          ),
+        }));
+      },
+
+      removeTraitFromCharacter: (characterId, traitId) => {
+        set((state) => ({
+          characters: state.characters.map((char) =>
+            char.id === characterId
+              ? {
+                  ...char,
+                  traits: char.traits?.filter((t) => t.id !== traitId) ?? [],
+                }
+              : char
+          ),
+        }));
+      },
 
       getCourtXpSpentForCharacter: (characterId) => {
         const character = get().characters.find((c) => c.id === characterId);
@@ -299,6 +281,14 @@ export const useCharacterStore = create<CharacterState>()(
               : char
           ),
         })),
+
+        deleteCharacter: (id: number) => {
+          set((state) => ({
+            characters: state.characters.map((char) =>
+              char.id === id ? { ...char, deleted: true } : char
+            ),
+          }));
+        },
     }),
     {
       name: 'character-storage', // localStorage key

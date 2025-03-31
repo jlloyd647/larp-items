@@ -105,6 +105,7 @@ export const EventForm = ({ event }: EventFormProps) => {
         <ScrollArea className="h-[300px] border rounded-md p-2">
           <div className="space-y-2">
           {[...characters]
+          .filter((char) => !char.deleted)
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((char) => {
               const player = players.find((p) => p.id === char.playerId);

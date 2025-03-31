@@ -5,6 +5,8 @@ import { useTraitStore } from '@/stores/useTraitStore';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import AddTraitScrollList from './AddTraitScrollList';
+import { useCharacterStore } from '@/stores/useCharacterStore';
+import RemoveTraitScrollList from './RemoveTraitScrollList';
 
 type CharacterTraitListProps = {
   character: Character;
@@ -12,6 +14,12 @@ type CharacterTraitListProps = {
 
 const CharacterTraitList = ({ character }: CharacterTraitListProps) => {
   const allTraits = useTraitStore((state) => state.traits);
+
+  const updatedCharacter = useCharacterStore((state) =>
+    state.characters.find((c) => c.id === character.id)
+  );
+
+  const characterToUse = updatedCharacter || character;
 
   const getTraitName = (traitId: number): string => {
     const trait = allTraits.find((t) => t.id === traitId);
@@ -37,18 +45,18 @@ const CharacterTraitList = ({ character }: CharacterTraitListProps) => {
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogTitle>Remove Trait</DialogTitle>
-            <p className="text-sm text-muted-foreground">Coming soon</p>
+            <RemoveTraitScrollList characterId={character.id} />
           </DialogContent>
         </Dialog>
       </div>
 
-      {character?.traits?.length === 0 ? (
+      {characterToUse?.traits?.length === 0 ? (
         <p className="text-sm italic text-muted-foreground">
           This character has no traits yet.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-          {character?.traits?.map((trait) => (
+          {characterToUse?.traits?.map((trait) => (
             <div
               key={trait.id}
               className="rounded border px-3 py-1 text-sm bg-muted"

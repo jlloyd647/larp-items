@@ -4,6 +4,7 @@ import type { Skill } from '@/types/index';
 
 type SkillState = {
   skills: Skill[];
+  setSkills: (skills: Skill[]) => void;
   getSkillById: (id: number) => Skill | undefined;
   getSkillsByIds: (ids: number[]) => Skill[];
   updateSkill: (updatedSkill: Skill) => void;
@@ -129,6 +130,8 @@ export const useSkillStore = create<SkillState>()(
   persist(
     (set, get) => ({
       skills: skillData,
+
+      setSkills: (skills: Skill[]) => set({ skills }),
 
       getSkillById: (id) => get().skills.find((skill) => skill.id === id),
 

@@ -19,7 +19,6 @@ const RemoveSkillScrollList = ({ characterId }: Props) => {
     s.characters.find((c) => c.id === characterId)
   );
 
-  const skills = useSkillStore((s) => s.skills);
   const getSkillById = useSkillStore((s) => s.getSkillById);
   const removeSkill = useCharacterStore((s) => s.removeSkillFromCharacter);
 

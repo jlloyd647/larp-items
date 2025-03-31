@@ -22,11 +22,12 @@ import { useBoonStore } from '@/stores/useBoonStore';
 import TraitSelector from '@/components/Selectors/TraitSelector';
 import { useTraitStore } from '@/stores/useTraitStore';
 import TraitForm from '@/components/BoonsAndBanesForm/TraitForm';
+import { useCharacterStore } from '@/stores/useCharacterStore';
 
 const HomePage: React.FC = () => {
   const [selectedRecipe, setSelectedRecipe] = React.useState<ArtisanRecipe>(recipes[0]);
-  const [selectedPlayer, setSelectedPlayer] = React.useState<Player | null>(null);
-  const [selectedCharacter, setSelectedCharacter] = React.useState<Character | null>(null);
+  const [selectedPlayerId, setSelectedPlayerId] = React.useState<number | null>(null);
+  const [selectedCharacterId, setSelectedCharacterId] = React.useState<number | null>(null);
   const [selectedEventId, setSelectedEventId] = React.useState<number | null>(null);
   const [selectedSpellId, setSelectedSpellId] = React.useState<number | null>(null);
   const [selectedTraitId, setSelectedTraitId] = React.useState<number | null>(null);
@@ -37,6 +38,8 @@ const HomePage: React.FC = () => {
   const spells = useSpellStore((state) => state.spells);
   const traits = useTraitStore((state) => state.traits);
 
+  const selectedPlayer = usePlayerStore((s) => s.getPlayerById(selectedPlayerId ?? -1));
+  const selectedCharacter = useCharacterStore((s) => s.getCharacterById(selectedCharacterId ?? -1));
   const selectedEvent = useEventStore((s) => s.getEventById(selectedEventId ?? -1));
   const selectedSpell = useSpellStore((s) => s.getSpellById(selectedSpellId ?? -1));
   const selectedSkill = useSkillStore((s) => s.getSkillById(selectedSkillId ?? -1));
@@ -84,10 +87,21 @@ const HomePage: React.FC = () => {
           <TabsContent value="players">
             <div className='flex flex-row gap-4'>
               <div>
-                <PlayerSelector list={players} setSelectedPlayer={setSelectedPlayer} setSelectedCharacter={setSelectedCharacter} />
+                <PlayerSelector 
+                  list={players} 
+                  selectedPlayerId={selectedPlayerId}
+                  setSelectedPlayerId={setSelectedPlayerId}
+                  selectedCharacterId={selectedCharacterId}
+                  setSelectedCharacterId={setSelectedCharacterId}
+                  />
               </div>
               <div>
-                {selectedCharacter ? <CharacterForm selectedCharacter={selectedCharacter}/> : <PlayerForm selectedPlayer={selectedPlayer}/>}
+                {selectedCharacter ? (
+                  <CharacterForm key={selectedCharacterId} character={selectedCharacter}
+                  />
+                ) : selectedPlayer ? (
+                  <PlayerForm key={selectedPlayerId} player={selectedPlayer} setSelectedPlayerId={setSelectedPlayerId} setSelectedCharacterId={setSelectedCharacterId} />
+                ) : null}
               </div>
             </div>
           </TabsContent>  

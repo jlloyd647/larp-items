@@ -2,23 +2,27 @@
 import { useState } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useCharacterStore } from '@/stores/useCharacterStore'; // Already imported
+import { useCharacterStore } from '@/stores/useCharacterStore';
 import { Button } from '../ui/button';
-
-const courtOptions = ['Courtless', 'Catalytic', 'Feral', 'Radiant', 'Umbral', 'Undying'];
 
 type CreateCharacterFormProps = {
   playerId: number;
+  setOpen: (open: boolean) => void;
+  setSelectedPlayerId: (id: number | null) => void;
+  setSelectedCharacterId: (id: number) => void;
 };
 
-const CreateCharacterForm = ({ playerId }: CreateCharacterFormProps) => {
+const CreateCharacterForm = ({
+  playerId,
+  setOpen,
+  setSelectedPlayerId,
+  setSelectedCharacterId,
+}: CreateCharacterFormProps) => {
   const addCharacter = useCharacterStore((s) => s.addCharacter);
   const characters = useCharacterStore((s) => s.characters);
 
   const [name, setName] = useState('');
   const [xp, setXp] = useState('');
-  const [court, setCourt] = useState('');
 
   const handleSubmit = () => {
     const nextId = Math.max(0, ...characters.map((c) => c.id)) + 1;
@@ -28,13 +32,22 @@ const CreateCharacterForm = ({ playerId }: CreateCharacterFormProps) => {
       playerId,
       name,
       xp: Number(xp),
-      court,
+      court: 1,
       courtXp: 0,
       bank: 0,
       skills: [],
+      magicItem: '',
+      magicItemCXp: 0,
+      deaths: 0,
+      path: '',
+      prologue: '',
+      communityPoints: 0,
+      characterRace: '',
     });
 
-    // Optionally reset or close modal (shadcn handles closing if you place it in a controlled Dialog)
+    setSelectedPlayerId(null);
+    setSelectedCharacterId(nextId);
+    setOpen(false);
   };
 
   return (
@@ -53,23 +66,7 @@ const CreateCharacterForm = ({ playerId }: CreateCharacterFormProps) => {
         />
       </div>
 
-      <div>
-        <Label>Court</Label>
-        <Select value={court} onValueChange={setCourt}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a court" />
-          </SelectTrigger>
-          <SelectContent>
-            {courtOptions.map((courtOption) => (
-              <SelectItem key={courtOption} value={courtOption}>
-                {courtOption}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <Button onClick={handleSubmit} disabled={!name || !xp || !court}>
+      <Button onClick={handleSubmit} disabled={!name || !xp}>
         Add Character
       </Button>
     </div>

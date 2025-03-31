@@ -1,5 +1,3 @@
-import { players } from './../lib/playerConsts';
-import { Description } from './../../node_modules/cmdk/node_modules/@radix-ui/react-dialog/dist/index.d';
 export interface Item {
   id: number;
   name: string;
@@ -32,8 +30,9 @@ export type Player = {
   emergencyContactName?: string | null;
   emergencyContactNumber?: string | null;
   email?: string | null;
-  liabilityWaiverSigned?: boolean | null;
+  liabilityWaiverSigned: boolean | null;
   inactive?: boolean;
+  deleted?: boolean;
 };
 
 export type Character = {
@@ -64,6 +63,7 @@ export type Character = {
   boons?: number[];
   banes?: number[];
   traits?: number[];
+  deleted?: boolean;
 }
 
 export type Skill = {

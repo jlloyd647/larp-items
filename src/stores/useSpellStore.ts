@@ -4,6 +4,7 @@ import type { Spell } from '@/types';
 
 type SpellState = {
   spells: Spell[];
+  setSpells: (spells: Spell[]) => void;
   addSpell: (spell: Spell) => void;
   updateSpell: (spell: Spell) => void;
   deleteSpell: (spellId: number) => void;
@@ -64,6 +65,8 @@ export const useSpellStore = create<SpellState>()(
         { id: 614, category: 'xxx', description: "xxx", rank: 2, name: "Natures Spite: Night", xpCost: 0, skillCost: 3, specialEffect: "Curse of Ice" },
         { id: 615, category: 'xxx', description: "xxx", rank: 2, name: "Natures Spite: Rain", xpCost: 0, skillCost: 3, specialEffect: "Curse of Magic" }
       ],
+
+      setSpells: (spells: Spell[]) => set({ spells }),
 
       addSpell: (spell) =>
         set((state) => ({
