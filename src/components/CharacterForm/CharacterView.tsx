@@ -9,6 +9,8 @@ import { COURTS } from '@/lib/consts';
 
 type CharacterViewProps = {
   character: Character;
+  body: number;
+  skill: number;
 };
 
 const getCourtName = (id: number) => {
@@ -16,7 +18,7 @@ const getCourtName = (id: number) => {
 };
 
 
-const CharacterView = ({ character: initialCharacter }: CharacterViewProps) => {
+const CharacterView = ({ character: initialCharacter, body, skill }: CharacterViewProps) => {
   const allSkills = useSkillStore((state) => state.skills);
 
   // ✅ Get live version of the character from store
@@ -68,11 +70,11 @@ const CharacterView = ({ character: initialCharacter }: CharacterViewProps) => {
         <div className="grid grid-cols-3 gap-4">
           <div className="text-sm flex gap-x-2">
             <span className="text-muted-foreground">Body:</span>
-            <span className="font-medium">{}</span>
+            <span className="font-medium">{body}</span>
           </div>
           <div className="text-sm flex gap-x-2">
             <span className="text-muted-foreground">Skill:</span>
-            <span className="font-medium"></span>
+            <span className="font-medium">{skill}</span>
           </div>
           <div className="text-sm flex gap-x-2">
             <span className="text-muted-foreground">Deaths:</span>

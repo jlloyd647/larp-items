@@ -51,7 +51,7 @@ export async function uploadAllStoresToGist(token: string, filename = 'larp-data
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      description: 'LARP Items Backup (Multi-store)',
+      description: 'Brink - LARP Management System Backup (Multi-store)',
       public: false,
       files: {
         [filename]: {

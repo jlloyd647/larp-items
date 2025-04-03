@@ -28,7 +28,6 @@ const AddTraitScrollList = ({ characterId }: AddTraitScrollListProps) => {
   if (!character) return <div>Character not found</div>;
 
   const filteredTraits = traits.filter((trait) => {
-    console.log(character);
     const matchesSearch = trait.name.toLowerCase().includes(search.toLowerCase());
     const matchesSource =
       (trait.source === 'Court' && trait.sourceId == character.court) ||
@@ -56,7 +55,7 @@ const AddTraitScrollList = ({ characterId }: AddTraitScrollListProps) => {
       <ScrollArea className="h-[300px] border rounded-md p-2">
         <ul className="space-y-1">
           {filteredTraits.map((trait) => {
-            const alreadyHas = character.traits?.some((t) => t.id === trait.id);
+            const alreadyHas = character.traits?.some((t) => t === trait.id);
             const isSelectable = !alreadyHas;
 
             return (

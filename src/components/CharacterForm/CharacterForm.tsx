@@ -133,7 +133,7 @@ export const CharacterForm = ({ character }: CharacterFormProps) => {
           </TabsList>
 
           <TabsContent value="view">
-            <CharacterView character={character} />
+            <CharacterView character={character} body={body} skill={skill} />
           </TabsContent>
 
           <TabsContent value="edit">

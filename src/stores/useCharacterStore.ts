@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Character } from '@/types/index';
 import { useSkillStore } from './useSkillStore';
+import type { Trait } from '@/types/index'; 
 
 type CharacterState = {
   characters: Character[];
@@ -21,7 +22,7 @@ type CharacterState = {
   addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) => void;
   addBoonToCharacter: (characterId: number, boonId: number) => void;
   removeBoonFromCharacter: (characterId: number, boonId: number) => void;
-  addTraitToCharacter: (characterId: number, trait: { id: number }) => void;
+  addTraitToCharacter: (characterId: number, trait: number ) => void;
   deleteCharacter: (id: number) => void; 
 };
 
@@ -184,7 +185,7 @@ export const useCharacterStore = create<CharacterState>()(
             char.id === characterId
               ? {
                   ...char,
-                  traits: char.traits?.filter((t) => t.id !== traitId) ?? [],
+                  traits: char.traits?.filter((t) => t !== traitId) ?? [],
                 }
               : char
           ),
@@ -276,7 +277,7 @@ export const useCharacterStore = create<CharacterState>()(
             char.id === characterId
               ? {
                   ...char,
-                  traits: [...(char.traits || []), { id: trait.id }],
+                  traits: [...(char.traits || []), trait.id], // ✅ only the number
                 }
               : char
           ),
