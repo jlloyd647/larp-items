@@ -35,7 +35,7 @@ export const useTraitStore = create<TraitState>()(
           traits: state.traits.filter((t) => t.id !== id),
         })),
 
-      getTraitById: (id) => get().traits.find((t) => t.id === id),
+      getTraitById: (id: number) => get().traits.find((t) => t.id === id),
     }),
     {
       name: 'trait-storage',

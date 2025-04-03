@@ -38,19 +38,19 @@ const RemoveTraitScrollList = ({ characterId }: RemoveTraitScrollListProps) => {
       <ScrollArea className="h-[300px] border rounded-md p-2">
         <ul className="space-y-1">
           {traits.map((traitObj) => {
-            const trait = getTraitById(traitObj.id);
+            const trait = getTraitById(traitObj);
             const label = trait
               ? `${trait.type === 'Bane' ? 'Bane - ' : 'Boon - '}${trait.name}`
-              : `Unknown Trait (${traitObj.id})`;
+              : `Unknown Trait (${traitObj})`;
 
             return (
               <li
-                key={traitObj.id}
-                onClick={() => setSelectedTraitId(traitObj.id)}
+                key={traitObj}
+                onClick={() => setSelectedTraitId(traitObj)}
                 className={cn(
                   'cursor-pointer px-2 py-1 rounded',
                   'hover:bg-muted',
-                  selectedTraitId === traitObj.id && 'bg-muted font-medium'
+                  selectedTraitId === traitObj && 'bg-muted font-medium'
                 )}
               >
                 {label}

@@ -58,10 +58,10 @@ const CharacterTraitList = ({ character }: CharacterTraitListProps) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
           {characterToUse?.traits?.map((trait) => (
             <div
-              key={trait.id}
+              key={trait}
               className="rounded border px-3 py-1 text-sm bg-muted"
             >
-              {getTraitName(trait.id)}
+              {getTraitName(trait)}
             </div>
           ))}
         </div>

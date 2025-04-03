@@ -2,6 +2,7 @@
 
 import { useCharacterStore } from '@/stores/useCharacterStore';
 import { useSkillStore } from '@/stores/useSkillStore';
+import { useTraitStore } from '@/stores/useTraitStore';
 
 type CharacterPrintCardProps = {
   characterId: number;
@@ -15,6 +16,7 @@ const CharacterPrintCard = ({ characterId, body, skill }: CharacterPrintCardProp
   );
 
   const getSkillById = useSkillStore((state) => state.getSkillById);
+  const getTraitById = useTraitStore((state) => state.getTraitById);
 
   if (!character) return null;
 
@@ -131,18 +133,45 @@ const CharacterPrintCard = ({ characterId, body, skill }: CharacterPrintCardProp
           <p><strong>Skill:</strong> {skill}</p>
           <br />
           <p><strong>Boons</strong></p>
-          <ul style={{ fontSize: '8pt', paddingLeft: '4mm' }}>
-            <li>Boon 1</li>
-            <li>Boon 2</li>
-            <li>Boon 3</li>
-          </ul>
+          {character.traits && character.traits.length > 0 && (
+            <ul style={{ fontSize: '8pt', paddingLeft: '4mm' }}>
+              {
+                character.traits
+                .filter((traitId) => {
+                  const trait = getTraitById(traitId);
+                  return trait?.type === 'Boon';
+                })
+                .map((traitId, index) => {
+                  const trait = getTraitById(traitId);
+                  return (
+                    <li key={index}>
+                      {trait ? trait.name : 'Unknown boon'}
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          )}
           <p><strong>Banes</strong></p>
-          <ul style={{ fontSize: '8pt', paddingLeft: '4mm' }}>
-            <li>Bane 1</li>
-            <li>Bane 2</li>
-            <li>Bane 3</li>
-          </ul>
-
+          {character.traits && character.traits.length > 0 && (
+            <ul style={{ fontSize: '8pt', paddingLeft: '4mm' }}>
+              {
+                character.traits
+                .filter((traitId) => {
+                  const trait = getTraitById(traitId);
+                  return trait?.type === 'Bane';
+                })
+                .map((traitId, index) => {
+                  const trait = getTraitById(traitId);
+                  return (
+                    <li key={index}>
+                      {trait ? trait.name : 'Unknown Bane'}
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          )}
         </div>
       </div>
     </div>
