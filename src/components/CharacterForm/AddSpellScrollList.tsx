@@ -29,6 +29,7 @@ const AddSpellScrollList = ({ characterId }: AddSpellScrollListProps) => {
 
   const spells = useSpellStore((state) => state.spells);
   const addSpell = useCharacterStore((state) => state.addSpellToCharacter);
+  const courtXpSpent = useCharacterStore((state) => state.getCourtXpSpentForCharacter(character.id));
 
   if (!character) return <div>Character not found</div>;
 
@@ -125,7 +126,7 @@ const AddSpellScrollList = ({ characterId }: AddSpellScrollListProps) => {
               className="w-20"
             />
             <span className="text-muted-foreground text-sm">
-              / {character.courtXp}
+              / {character.courtXp} CxP available (spent: {courtXpSpent + cxpUsed})
             </span>
           </>
         )}

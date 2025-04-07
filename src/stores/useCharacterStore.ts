@@ -7,9 +7,10 @@ import type { Trait } from '@/types/index';
 type CharacterState = {
   characters: Character[];
   setCharacters: (characters: Character[]) => void;
-  getCharacterById: (id: string) => Character | undefined;
+  getCharacterById: (id: number) => Character | undefined;
   addCharacter: (character: Character) => void;
   updateCharacter: (character: Character) => void;
+  patchCharacter: (characterId: number, updates: Partial<Character>) => void;
   removeCharacter: (id: number) => void;
   getCharactersForPlayer: (playerId: number) => Character[];
   addSkillToCharacter: (characterId: number, skillId: number) => void;
@@ -47,9 +48,24 @@ export const useCharacterStore = create<CharacterState>()(
 
       updateCharacter: (character) =>
         set((state) => ({
-          characters: state.characters.map((c) =>
-            c.id === character.id ? character : c
+          characters: state.characters.map((char) =>
+            char.id === character.id ? character : char
           ),
+        })),
+
+      patchCharacter: (characterId: number, updates: Partial<Character>) =>
+        set((state) => ({
+          characters: state.characters.map((char) => {
+            if (char.id !== characterId) return char;
+      
+            const { xp, ...rest } = updates;
+      
+            return {
+              ...char,
+              ...(char.xp >= 210 ? {} : { xp }), // Only apply XP if under 210
+              ...rest, // Apply all other updates unconditionally
+            };
+          }),
         })),
 
       removeCharacter: (id) =>

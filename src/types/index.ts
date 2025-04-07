@@ -84,6 +84,14 @@ export type Event = {
     playerId: number;
     characterId: number;
   }[];
+  eventCompleted?: boolean;
+  characterUpdates?: {
+    [charId: number]: {
+      bank?: number;
+      courtXp?: number;
+      deaths?: number;
+    };
+  };
 }
 
 export type Spell = {

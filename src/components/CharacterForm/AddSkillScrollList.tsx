@@ -28,6 +28,7 @@ const AddSkillScrollList = ({ characterId }: AddSkillScrollListProps) => {
 
   const skills = useSkillStore((state) => state.skills);
   const addSkill = useCharacterStore((state) => state.addSkillToCharacter);
+  const courtXpSpent = useCharacterStore((state) => state.getCourtXpSpentForCharacter(character.id));
 
   if (!character) return <div>Character not found</div>;
 
@@ -105,7 +106,7 @@ const AddSkillScrollList = ({ characterId }: AddSkillScrollListProps) => {
               className="w-20"
             />
             <span className="text-muted-foreground text-sm">
-              / {character.courtXp}
+              / {character.courtXp} CxP available (spent: {courtXpSpent + cxpUsed})
             </span>
           </>
         )}
