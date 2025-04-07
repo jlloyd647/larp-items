@@ -20,6 +20,7 @@ type CharacterState = {
   getCharacterSkillRank: (characterId: number, skillId: number) => number;
   getCourtXpSpentForCharacter: (characterId: number) => number;
   getXpSpentForCharacter: (characterId: number) => number;
+  updateCharacterMagicItemCxp: (characterId: number, change: number) => void;
   addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) => void;
   addBoonToCharacter: (characterId: number, boonId: number) => void;
   removeBoonFromCharacter: (characterId: number, boonId: number) => void;
@@ -241,6 +242,15 @@ export const useCharacterStore = create<CharacterState>()(
           return totalXp + xpForSkill;
         }, 0);
       },
+
+      updateCharacterMagicItemCxp: (characterId, change) =>
+        set((state) => ({
+          characters: state.characters.map((char) =>
+            char.id === characterId
+              ? { ...char, magicItemCxp: Math.max((char.magicItemCxp ?? 0) + change, 0) }
+              : char
+          ),
+        })),
 
       addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) =>
         set((state) => ({

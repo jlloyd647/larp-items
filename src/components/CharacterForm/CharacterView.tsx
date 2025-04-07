@@ -6,9 +6,11 @@ import { useCharacterStore } from '@/stores/useCharacterStore';
 import { Card, CardContent } from '@/components/ui/card';
 import CharacterAttributes from './CharacterAttributes';
 import { COURTS } from '@/lib/consts';
+import { useMagicItemStore } from '@/stores/useMagicItemStore';
 
 type CharacterViewProps = {
   character: Character;
+  magicItemId: number | null;
   body: number;
   skill: number;
 };
@@ -18,8 +20,11 @@ const getCourtName = (id: number) => {
 };
 
 
-const CharacterView = ({ character: initialCharacter, body, skill }: CharacterViewProps) => {
+const CharacterView = ({ character: initialCharacter, magicItemId, body, skill }: CharacterViewProps) => {
   const allSkills = useSkillStore((state) => state.skills);
+  const magicItem = useMagicItemStore((state) =>
+    state.getItemByCharacterId(initialCharacter.id).find((item) => item.id === magicItemId)
+  );
 
   // ✅ Get live version of the character from store
   const character = useCharacterStore((state) =>
@@ -85,11 +90,11 @@ const CharacterView = ({ character: initialCharacter, body, skill }: CharacterVi
         <div className="grid grid-cols-3 gap-4">
           <div className="text-sm flex gap-x-2">
             <span className="text-muted-foreground">Magic Item:</span>
-            <span className="font-medium">{character.magicItem}</span>
+            <span className="font-medium">{magicItem?.name}</span>
           </div>
           <div className="text-sm flex gap-x-2">
             <span className="text-muted-foreground">Magic Item CXp:</span>
-            <span className="font-medium">{character.magicItemCXp}</span>
+            <span className="font-medium">{magicItem?.cXpSpent}</span>
           </div>
           <div className="text-sm flex gap-x-2">
             <span className="text-muted-foreground">Community Points:</span>

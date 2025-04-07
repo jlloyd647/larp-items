@@ -143,3 +143,33 @@ export type BoonOrBane = {
   rank: number;
   type: 'Boon' | 'Bane'; // This will help differentiate between the two types
 }
+
+export type AbilityBox = {
+  checked: boolean;
+  spent: number; // 0 for free, 5 for paid
+};
+
+export type MagicItem = {
+  id: number;
+  characterId: number;
+  name: string;
+  cXpSpent: number;
+  coreAbilityName: string;
+  coreAbilityDescription: string;
+  minorAbilities?: {
+    name: string;
+    description: string;
+    id: number;
+    box1: AbilityBox;
+    box2?: AbilityBox;
+  }[];
+  majorAbilities?: {
+    name: string;
+    description: string;
+    id: number;
+    box1: AbilityBox;
+    box2?: AbilityBox;
+    box3?: AbilityBox;
+  }[];
+  deleted?: boolean;
+};

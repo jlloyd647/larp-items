@@ -24,6 +24,8 @@ import CharacterSpellPrintCard from './CharacterSpellPrintCard';
 import { Button } from '../ui/button';
 import CharacterDelete from './CharacterDelete';
 import { useCharacterStore } from '@/stores/useCharacterStore';
+import { useMagicItemStore } from '@/stores/useMagicItemStore';
+import MagicItemView from './MagicItemView';
 
 type CharacterFormProps = {
   character: Character;
@@ -35,6 +37,12 @@ export const CharacterForm = ({ character }: CharacterFormProps) => {
   const [skill, setSkill] = useState<number>(15);
   const printRef = useRef<HTMLDivElement>(null);
   const printSpellRef = useRef<HTMLDivElement>(null);
+
+  const magicItem = useMagicItemStore((s) =>
+    s.getItemByCharacterId(character.id).find((item) => !item.deleted)
+  );
+  
+  const magicItemId = magicItem?.id ?? null;
 
   const lesserStaminaRanks = useCharacterStore((state) => {
     return character?.skills.find((s) => s.skillId === 115)?.rank ?? 0;
@@ -127,13 +135,18 @@ export const CharacterForm = ({ character }: CharacterFormProps) => {
         <Tabs value={tab} onValueChange={(value) => setTab(value as 'view' | 'edit' | 'card')} className="w-full">
           <TabsList className="mb-4">
             <TabsTrigger value="view">Character View</TabsTrigger>
+            <TabsTrigger value="magic-item">Magic Item</TabsTrigger>
             <TabsTrigger value="edit">Character Edit</TabsTrigger>
             <TabsTrigger value="card">Character Card</TabsTrigger>
             <TabsTrigger value="delete">Delete Character</TabsTrigger>
           </TabsList>
 
           <TabsContent value="view">
-            <CharacterView character={character} body={body} skill={skill} />
+            <CharacterView character={character} magicItemId={magicItemId} body={body} skill={skill} />
+          </TabsContent>
+
+          <TabsContent value="magic-item">
+            <MagicItemView magicItemId={magicItemId} characterId={character.id}/>
           </TabsContent>
 
           <TabsContent value="edit">

@@ -28,6 +28,7 @@ const STORE_KEYS = [
   'skill-storage',
   'spell-storage',
   'trait-storage',
+  'magic-item-storage',
   // add more as needed
 ];
 
