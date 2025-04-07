@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import AddEventForm from "@/components/EventForm/AddEventForm"
 
 type EventSelectorProps = {
   list: Event[];
@@ -20,8 +21,10 @@ const ScrollableList = ({ list, selectedId, setSelectedId }: EventSelectorProps)
   const [search, setSearch] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const filteredList = list.filter((list) =>
-    list.name.toLowerCase().includes(search.toLowerCase())
+  const filteredList = list
+  .filter((event) => !event.deleted)
+  .filter((event) =>
+    event.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -57,7 +60,7 @@ const ScrollableList = ({ list, selectedId, setSelectedId }: EventSelectorProps)
             <DialogTitle>Create New Event</DialogTitle>
           </DialogHeader>
 
-          {/* Content for creating a new event goes here */}
+          <AddEventForm closeDialog={() => setIsAddDialogOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>

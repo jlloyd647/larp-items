@@ -92,6 +92,7 @@ export type Event = {
       deaths?: number;
     };
   };
+  deleted?: boolean;
 }
 
 export type Spell = {

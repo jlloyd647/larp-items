@@ -16,6 +16,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from '@/components/ui/tooltip';
 import { Input } from '../ui/input';
 import { ScrollArea } from '../ui/scroll-area';
 import { Checkbox } from '../ui/checkbox';
@@ -44,6 +50,7 @@ export const EventForm = ({ event }: EventFormProps) => {
   const [editingDate, setEditingDate] = useState(false);
 
   const [showOpenDialog, setShowOpenDialog] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [characterUpdates, setCharacterUpdates] = useState<{
     [charId: number]: {
@@ -138,6 +145,17 @@ export const EventForm = ({ event }: EventFormProps) => {
       setEventEnded(false);
     }
   }
+
+  const handleDeleteEvent = () => {
+    const selectedEvent = useEventStore.getState().getEventById(event.id);
+    if (selectedEvent) {
+      useEventStore.getState().updateEvent({
+        ...selectedEvent,
+        deleted: true,
+      });
+    }
+    setIsDeleteDialogOpen(false);
+  };
 
   const hasChanges = useMemo(() => {
     return (
@@ -317,6 +335,46 @@ export const EventForm = ({ event }: EventFormProps) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <Button
+                  variant="ghost"
+                  className="text-red-600 hover:text-red-700"
+                  disabled={eventEnded}
+                >
+                  Delete Event
+                </Button>
+              </div>
+            </TooltipTrigger>
+            {eventEnded && (
+              <TooltipContent>
+                Completed events cannot be deleted.
+              </TooltipContent>
+            )}
+          </Tooltip>
+
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Are you sure?</DialogTitle>
+                <DialogDescription>
+                  Deleting this event is <strong>irreversible</strong> and will hide it from all event lists.
+                  Character data won't be rolled back, and this change cannot be undone.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="destructive" onClick={handleDeleteEvent}>
+                  Yes, Delete Event
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </TooltipProvider>
       </CardFooter>
     </Card>
   );
