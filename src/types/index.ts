@@ -52,7 +52,8 @@ export type Character = {
   spells?: {
     spellId: number;
     cxpUsed: number; // e.g. [2, 5] = CxP used
-  }
+    initialSpell: boolean;
+  }[];
   magicItem: string;
   magicItemCXp: number;
   deaths: number;

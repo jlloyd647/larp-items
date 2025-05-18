@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { Character } from '@/types/index';
 import { useSkillStore } from './useSkillStore';
 import type { Trait } from '@/types/index'; 
+import { useSpellStore } from './useSpellStore';
 
 type CharacterState = {
   characters: Character[];
@@ -21,7 +22,7 @@ type CharacterState = {
   getCourtXpSpentForCharacter: (characterId: number) => number;
   getXpSpentForCharacter: (characterId: number) => number;
   updateCharacterMagicItemCxp: (characterId: number, change: number) => void;
-  addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) => void;
+  addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number; initialSpell: boolean }) => void;
   addBoonToCharacter: (characterId: number, boonId: number) => void;
   removeBoonFromCharacter: (characterId: number, boonId: number) => void;
   addTraitToCharacter: (characterId: number, trait: number ) => void;
@@ -226,21 +227,32 @@ export const useCharacterStore = create<CharacterState>()(
       getXpSpentForCharacter: (characterId: number): number => {
         const character = get().characters.find((c) => c.id === characterId);
         if (!character) return 0;
-      
+
         const allSkills = useSkillStore.getState().skills;
-      
-        return character.skills.reduce((totalXp, { skillId, rank, cxpByRank }) => {
+        const allSpells = useSpellStore.getState().spells;
+
+        const xpFromSkills = character.skills?.reduce((totalXp, { skillId, rank, cxpByRank }) => {
           const skill = allSkills.find((s) => s.id === skillId);
           if (!skill) return totalXp;
-      
+
           const xpForSkill = Array.from({ length: rank }).reduce<number>((sum, _, i) => {
             const cxpUsed = cxpByRank?.[i] ?? 0;
             const xpCost = Math.max(0, skill.xpCost - cxpUsed);
             return sum + xpCost;
           }, 0);
-      
+
           return totalXp + xpForSkill;
-        }, 0);
+        }, 0) ?? 0;
+
+        const xpFromSpells = character.spells?.reduce((totalXp, { spellId, cxpUsed, initialSpell }) => {
+          const spell = allSpells.find((s) => s.id === spellId);
+          if (!spell) return totalXp;
+
+          const xpCost = initialSpell ? 0 : Math.max(0, spell.xpCost - (cxpUsed ?? 0));
+          return totalXp + xpCost;
+        }, 0) ?? 0;
+
+        return xpFromSkills + xpFromSpells;
       },
 
       updateCharacterMagicItemCxp: (characterId, change) =>
@@ -252,7 +264,7 @@ export const useCharacterStore = create<CharacterState>()(
           ),
         })),
 
-      addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number }) =>
+      addSpellToCharacter: (characterId: number, spell: { spellId: number; cxpUsed: number; initialSpell: boolean }) =>
         set((state) => ({
           characters: state.characters.map((c) => {
             if (Number(c.id) !== Number(characterId)) return c;

@@ -45,6 +45,7 @@ const AddSpellScrollList = ({ characterId }: AddSpellScrollListProps) => {
     const spellToAdd = {
       spellId: selected.id,
       cxpUsed: safeCxpUsed,
+      initialSpell: useFreeSpell,
       // If you later track xpUsed: xpUsed: useFreeSpell ? 0 : selected.xpCost,
     };
 

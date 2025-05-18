@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useSkillStore } from "@/stores/useSkillStore";
 import type { Skill } from "@/types";
 
-const categoryOptions = ["Combat", "Support", "Utility"]; // Adjust as needed
+const categoryOptions = ["Adaptability", "Combat", "Gunslinger", "Doctoring", "Social", "Espionage"]; // Adjust as needed
 
 const AddSkillForm = ({ onSubmit }: { onSubmit?: () => void }) => {
   const addSkill = useSkillStore((state) => state.addSkill);
@@ -76,15 +76,8 @@ const AddSkillForm = ({ onSubmit }: { onSubmit?: () => void }) => {
       </div>
 
       <div className="space-y-1">
-        <Label>Ranks (1 or 2)</Label>
-        <RadioGroup value={ranks.toString()} onValueChange={(val) => setRanks(Number(val))}>
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value="1" id="rank-1" />
-            <Label htmlFor="rank-1">1</Label>
-            <RadioGroupItem value="2" id="rank-2" />
-            <Label htmlFor="rank-2">2</Label>
-          </div>
-        </RadioGroup>
+        <Label>Ranks</Label>
+        <Input type="number" value={ranks} onChange={(e) => setRanks(Number(e.target.value))} />
       </div>
 
       <div className="space-y-1">

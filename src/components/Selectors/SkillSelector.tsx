@@ -48,7 +48,7 @@ const ScrollableList = ({ list, selectedId, setSelectedId }: SkillSelectorProps)
 
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="mt-4 w-full" disabled>
+          <Button variant="outline" className="mt-4 w-full">
             Add Skill
           </Button>
         </DialogTrigger>
