@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { ArtisanRecipe } from "@/types";
-import { items } from "@/lib/consts";
+import { items, craftedItems } from "@/lib/consts";
 import ConfirmPrint from './ConfirmPrint';
 import { Button } from './ui/button';
 
@@ -107,6 +107,11 @@ const RecipeForm = ({selectedRecipe}: Recipe) => {
                 <p>{secondaryResourceText}</p>
               </div>
             </div>
+          )}
+
+          {selectedRecipe?.craftedResource && (
+            //TODO: Update to stop using array list
+            <div><strong>Required Crafted Resource:</strong> {craftedItems?.find(item => item?.id === selectedRecipe?.craftedResource[0].id)?.name}</div>
           )}
 
           <div className="flex flex-row gap-4">

@@ -4,13 +4,28 @@ export interface Item {
   type: ItemType;
 }
 
+export interface CraftedItem {
+  id: number;
+  name: string;
+  type: CraftedItemType;
+}
+
 export type ItemType = 'Metal' | 'Wood' | 'Herb' | 'Glass' | 'Leather' | 'Cloth' | 'Monster' | 'Jewel' | 'Alchemy';
+export type GunsmithingItemType = 'Powder' | 'Bullet' | 'Attachment';
+export type CraftedItemType = 'Artisan' | 'Gunsmithing' | 'Alchemy' | 'Jewelcrafting' | 'Artificer' | 'Magic' | 'Drug';
 
 export interface ingredient {
   id: number;
   description: string;
   uses?: number;
 }
+
+export interface gunsmithingIngredient {
+  id: number;
+  description?: string;
+  uses?: number;
+}
+
 export type ArtisanRecipe = {
   id: number;
   name: string;
@@ -20,6 +35,19 @@ export type ArtisanRecipe = {
   secondaryResource?: ingredient[];
   secondaryResourceQuantity?: number;
   craftedResource?: ingredient[];
+  hasUses?: boolean;
+}
+
+export type GunsmithingRecipe = {
+  id: number;
+  name: string;
+  description: string;
+  type: GunsmithingItemType
+  primaryResource: gunsmithingIngredient[];
+  primaryResourceQuantity: number;
+  secondaryResource?: gunsmithingIngredient[];
+  secondaryResourceQuantity?: number;
+  craftedResource?: gunsmithingIngredient[];
   hasUses?: boolean;
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ArtisanRecipe, Player, Character, Skill, Event } from "@/types";
+import { ArtisanRecipe, GunsmithingRecipe, Player, Character, Skill, Event } from "@/types";
 import RecipeForm from '@/components/RecipeForm';
 import CharacterForm from '@/components/CharacterForm/CharacterForm';
 import PlayerForm from '@/components/PlayerForm/PlayerForm';
@@ -7,7 +7,7 @@ import SkillForm from '@/components/SkillForm/SkillForm';
 import EventForm from '@/components/EventForm/EventForm';
 import SpellForm from '@/components/SpellForm/SpellForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { recipes } from '@/lib/consts';
+import { recipes, gunsmithingRecipes } from '@/lib/consts';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useSkillStore } from '@/stores/useSkillStore';
 import { useEventStore } from '@/stores/useEventStore';
@@ -26,6 +26,7 @@ import { useCharacterStore } from '@/stores/useCharacterStore';
 
 const HomePage: React.FC = () => {
   const [selectedRecipe, setSelectedRecipe] = React.useState<ArtisanRecipe>(recipes[0]);
+  const [selectedGSRecipe, setSelectedGSRecipe] = React.useState<GunsmithingRecipe>(gunsmithingRecipes[0]);
   const [selectedPlayerId, setSelectedPlayerId] = React.useState<number | null>(null);
   const [selectedCharacterId, setSelectedCharacterId] = React.useState<number | null>(null);
   const [selectedEventId, setSelectedEventId] = React.useState<number | null>(null);
@@ -73,7 +74,14 @@ const HomePage: React.FC = () => {
             </div>
           </TabsContent>
           <TabsContent value="gunsmith">
-            Coming Soon
+            <div className='flex flex-row gap-4'>
+              <div>
+                <RecipeSelector list={gunsmithingRecipes} setSelected={setSelectedGSRecipe}/>
+              </div>
+              <div>
+                {selectedGSRecipe && (<RecipeForm selectedRecipe={selectedGSRecipe}/>)}
+              </div>
+            </div>
           </TabsContent>
           <TabsContent value="alchemy">
             Coming Soon

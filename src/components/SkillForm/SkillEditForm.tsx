@@ -5,10 +5,13 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import type { Skill } from '@/types';
+import { set } from 'react-hook-form';
 
 type SkillEditFormProps = {
   skillId: number;
 };
+
+const categoryOptions = ["Adaptability", "Combat", "Gunslinger", "Doctoring", "Social", "Espionage", "Production"];
 
 const SkillEditForm = ({ skillId }: SkillEditFormProps) => {
   const skill = useSkillStore((state) =>
@@ -18,6 +21,7 @@ const SkillEditForm = ({ skillId }: SkillEditFormProps) => {
 
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
+  const [category, setCategory] = useState('Combat');
   const [xpCost, setXpCost] = useState(0);
   const [ranks, setRanks] = useState(1);
   const [skillCost, setSkillCost] = useState(0);
@@ -27,10 +31,18 @@ const SkillEditForm = ({ skillId }: SkillEditFormProps) => {
     if (skill) {
       setName(skill.name);
       setDesc(skill.desc);
+      setCategory(skill.category);
       setXpCost(skill.xpCost);
       setRanks(skill.ranks);
       setSkillCost(skill.skillCost);
       setHasChanges(false); // reset change flag when loading
+    }
+  }, [skill]);
+
+  useEffect(() => {
+    if (skill) {
+      console.log('Skill loaded:', skill);
+      setCategory(skill.category);
     }
   }, [skill]);
 
@@ -40,6 +52,7 @@ const SkillEditForm = ({ skillId }: SkillEditFormProps) => {
     const changed =
       name !== skill.name ||
       desc !== skill.desc ||
+      category !== skill.category ||
       xpCost !== skill.xpCost ||
       ranks !== skill.ranks ||
       skillCost !== skill.skillCost;
@@ -82,6 +95,21 @@ const SkillEditForm = ({ skillId }: SkillEditFormProps) => {
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
         />
+      </div>
+
+      <div className="space-y-1">
+        <Label>Category</Label>
+        <div className="flex gap-2">
+          {categoryOptions.map((cat) => (
+            <Button
+              key={cat}
+              variant={category === cat ? "default" : "ghost"}
+              onClick={() => setCategory(cat)}
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
       </div>
 
       <div>

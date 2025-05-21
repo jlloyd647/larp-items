@@ -1,4 +1,4 @@
-import type { Item, ArtisanRecipe } from "../types";
+import type { Item, CraftedItem, ArtisanRecipe, GunsmithingRecipe } from "../types";
 
 export const items: Item[] = [
   { id: 1001, name: "Black Pine", type: "Wood" },
@@ -20,12 +20,20 @@ export const items: Item[] = [
   { id: 1017, name: "Spindle Silk", type: "Cloth" },
   { id: 1018, name: "Dream Cloth", type: "Cloth" },
   { id: 1019, name: "Jakal Fang", type: "Monster" },
-  { id: 1019, name: "Noct Fang", type: "Monster" },
-  { id: 1020, name: "Black Powder", type: "Alchemy" },
-  { id: 1020, name: "Guncotton", type: "Alchemy" },
-  { id: 1020, name: "Nitro", type: "Alchemy" },
-
+  { id: 1020, name: "Noct Fang", type: "Monster" },
+  { id: 1021, name: "Black Powder", type: "Alchemy" },
+  { id: 1022, name: "Guncotton", type: "Alchemy" },
+  { id: 1023, name: "Nitro", type: "Alchemy" },
 ];
+
+export const craftedItems: CraftedItem[] = [
+  { id: 1001, name: "Serrated Edging", type: "Artisan"},
+  { id: 1002, name: "Injector", type: "Artisan"},
+  { id: 1003, name: "Verita Gem: Weapon Imbue Magic", type: "Magic"},
+  { id: 1004, name: "R1-Trigger", type: "Drug"},
+  { id: 1005, name: "Epoxy Adhesive", type: "Alchemy"},
+  { id: 1006, name: "Tissue Adhesive", type: "Alchemy"},
+]
 
 export const recipes: ArtisanRecipe[] = [
   { id: 1, name: "Bandage", description: "A simple bandage for minor wounds.", 
@@ -309,6 +317,171 @@ export const recipes: ArtisanRecipe[] = [
     secondaryResourceQuantity: 1,
   },
 ];
+
+export const gunsmithingRecipes: GunsmithingRecipe[] = [
+  { id: 1, name: "Black Powder", description: "Common material used for Gunsmithing.", type: 'Powder',
+    primaryResource: [
+      {id: 1013},
+    ],
+    primaryResourceQuantity: 1,
+  },
+  { id: 2, name: "Guncotton", description: "Common material used for Gunsmithing.", type: 'Powder',
+    primaryResource: [
+      {id: 1014},
+    ],
+    primaryResourceQuantity: 2,
+  },
+  { id: 3, name: "Nitro", description: "Common material used for Gunsmithing.", type: 'Powder',
+    primaryResource: [
+      {id: 1015},
+    ],
+    primaryResourceQuantity: 3,
+  },
+  { id: 4, name: "Concussive Shot", description: "Short Waylay when delivered from behind", type: 'Bullet',
+    secondaryResource: [
+      {id: 1010},
+    ],
+    secondaryResourceQuantity: 1,
+    primaryResourceQuantity: 1,
+    primaryResource: [
+      {id: 1022, description: "Creates 1 bullet", uses: 1},
+      {id: 1023, description: "Creates 3 bullet", uses: 3},
+    ]
+  },
+  { id: 5, name: "Full Metal Jacket", description: "This bullet changes damage bullet damage from Pierce to Body: Low Cap Only", type: 'Bullet',
+    secondaryResource: [
+      {id: 1020},
+    ],
+    secondaryResourceQuantity: 1,
+    primaryResourceQuantity: 1,
+    primaryResource: [
+      {id: 1022, description: "Creates 1 bullet", uses: 1},
+      {id: 1023, description: "Creates 3 bullet", uses: 3},
+    ]
+  },
+  { id: 6, name: "Hollow Point", description: "This bullet calls a Short Desecrate: High Cap Only", type: 'Bullet',
+    secondaryResource: [
+      {id: 1019},
+    ],
+    secondaryResourceQuantity: 1,
+    primaryResourceQuantity: 1,
+    primaryResource: [
+      {id: 1022, description: "Creates 1 bullet", uses: 1},
+      {id: 1023, description: "Creates 3 bullet", uses: 3},
+    ]
+  },
+  { id: 7, name: "Loud Shot", description: "This bullet calls a Voice Range Quick Distraction", type: 'Bullet',
+    secondaryResource: [
+      {id: 1005},
+    ],
+    secondaryResourceQuantity: 1,
+    primaryResourceQuantity: 1,
+    primaryResource: [
+      {id: 1021, description: "Creates 1 bullet", uses: 1},
+      {id: 1022, description: "Creates 3 bullet", uses: 3},
+    ]
+  },
+  { id: 8, name: "Rending Shot", description: "This bullet calls a Short Poison", type: 'Bullet',
+    secondaryResource: [
+      {id: 1002},
+    ],
+    secondaryResourceQuantity: 1,
+    primaryResourceQuantity: 1,
+    primaryResource: [
+      {id: 1021, description: "Creates 1 bullet", uses: 1},
+      {id: 1022, description: "Creates 3 bullet", uses: 3},
+      {id: 1023, description: "Creates 6 bullet", uses: 6},
+    ]
+  },
+  { id: 9, name: "Shatter Shot", description: "This bullet deals 25 Shatter damage", type: 'Bullet',
+    secondaryResource: [
+      {id: 1014},
+    ],
+    secondaryResourceQuantity: 1,
+    primaryResourceQuantity: 1,
+    primaryResource: [
+      {id: 1021, description: "Creates 1 bullet", uses: 1},
+      {id: 1022, description: "Creates 3 bullet", uses: 3},
+      {id: 1023, description: "Creates 6 bullet", uses: 6},
+    ]
+  },
+  { id: 10, name: "Starshell", description: "Fires a bright, glowing flare that can be seen for miles.", type: 'Bullet',
+    secondaryResource: [
+      {id: 1013},
+    ],
+    secondaryResourceQuantity: 1,
+    primaryResourceQuantity: 1,
+    primaryResource: [
+      {id: 1021, description: "Creates 1 bullet", uses: 1},
+      {id: 1022, description: "Creates 3 bullet", uses: 3},
+    ]
+  },
+    { id: 10, name: "Bayonet", description: "You may utilize your HC proficiences as one-handed proficiencies for one encounter. Does not stack with one-handed proficienciey: High Cap Only.", type: 'Attachment',
+    primaryResource: [
+      {id: 1013},
+    ],
+    primaryResourceQuantity: 3,
+    craftedResource: [
+      {id: 1001}
+    ]
+  },
+    { id: 10, name: "Hidden Shot", description: "You may deal your gun damage as an 'Inflict' call three times per combat for one encounter: Low Cap Only.", type: 'Attachment',
+    primaryResource: [
+      {id: 1005},
+    ],
+    primaryResourceQuantity: 3,
+    craftedResource: [
+      {id: 1002}
+    ]
+  },
+    { id: 10, name: "Magic Barrel", description: "Bullets now deal the 'Magic' tagline for one encounter.", type: 'Attachment',
+    primaryResource: [
+      {id: 1005},
+    ],
+    primaryResourceQuantity: 3,
+    craftedResource: [
+      {id: 1003}
+    ]
+  },
+    { id: 10, name: "Neon Barrel", description: "Damage to Noct increased by 2 for one encounter.", type: 'Attachment',
+    primaryResource: [
+      {id: 1006},
+    ],
+    primaryResourceQuantity: 1,
+    craftedResource: [
+      {id: 1004}
+    ]
+  },
+    { id: 10, name: "Neon Sight", description: "Reduces the skill cost of 'Aimed Shot' by 2 for one encounter.", type: 'Attachment',
+    primaryResource: [
+      {id: 1006},
+    ],
+    primaryResourceQuantity: 1,
+    craftedResource: [
+      {id: 1005}
+    ]
+  },
+    { id: 10, name: "Silencer", description: "Reduces the skill cost of 'Muffled Shot' by 2 for one encounter.", type: 'Attachment',
+    primaryResource: [
+      {id: 1017},
+    ],
+    primaryResourceQuantity: 3,
+    craftedResource: [
+      {id: 1006}
+    ]
+  },
+    { id: 10, name: "Sticky Handle", description: "Immune to the 'Disarm' tagline for one encounter.", type: 'Attachment',
+    primaryResource: [
+      {id: 1002},
+    ],
+    primaryResourceQuantity: 3,
+    craftedResource: [
+      {id: 1006}
+    ]
+  },
+]
+
+    
 
 export const COURTS = [
   { id: 1, name: "Courtless" },

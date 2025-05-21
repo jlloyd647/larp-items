@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useSkillStore } from "@/stores/useSkillStore";
 import type { Skill } from "@/types";
 
-const categoryOptions = ["Adaptability", "Combat", "Gunslinger", "Doctoring", "Social", "Espionage"]; // Adjust as needed
+const categoryOptions = ["Adaptability", "Combat", "Gunslinger", "Doctoring", "Social", "Espionage", "Production"]; // Adjust as needed
 
 const AddSkillForm = ({ onSubmit }: { onSubmit?: () => void }) => {
   const addSkill = useSkillStore((state) => state.addSkill);
