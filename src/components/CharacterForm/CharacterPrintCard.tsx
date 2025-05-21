@@ -1,22 +1,33 @@
 'use client';
 
 import { useCharacterStore } from '@/stores/useCharacterStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useSkillStore } from '@/stores/useSkillStore';
 import { useTraitStore } from '@/stores/useTraitStore';
+import { COURTS } from '@/lib/consts';
 
 type CharacterPrintCardProps = {
   characterId: number;
+  playerId: number;
   body: number;
   skill: number;
 };
 
-const CharacterPrintCard = ({ characterId, body, skill }: CharacterPrintCardProps) => {
+const CharacterPrintCard = ({ characterId, playerId, body, skill }: CharacterPrintCardProps) => {
   const character = useCharacterStore((state) =>
     state.characters.find((c) => c.id === characterId)
   );
 
   const getSkillById = useSkillStore((state) => state.getSkillById);
   const getTraitById = useTraitStore((state) => state.getTraitById);
+  const getCourtXpSpent = useCharacterStore((state) => state.getCourtXpSpentForCharacter);
+  const getXpSpentForCharacter = useCharacterStore((state) => state.getXpSpentForCharacter);
+  const getCourtName = (id: number) => {
+    return COURTS.find((c) => Number(c.id) === Number(id))?.name || `Unknown (${id})`;
+  };
+
+  const player = usePlayerStore((state) =>
+    state.players.find((p) => p.id === playerId));
 
   if (!character) return null;
 
@@ -43,18 +54,18 @@ const CharacterPrintCard = ({ characterId, body, skill }: CharacterPrintCardProp
           width: '100%',
         }}>
         <div className={"col-1" } style={{ flex: 1 }}>
-          <p><strong>Player:</strong> {/* Replace with player lookup if needed */}John Doe</p>
+          <p><strong>Player:</strong> {player?.name}</p>
           <p><strong>Character:</strong> {character.name}</p>
-          <p><strong>Court:</strong> {character.court}</p>
+          <p><strong>Court:</strong> {getCourtName(character?.court)}</p>
         </div>
         <div className={"col-2"} style={{ flex: 1 }}>
-          <p><strong>XP:</strong> {character.xp}</p>
-          <p><strong>Court XP:</strong> {/* Placeholder */} 20</p>
-          <p><strong>Something:</strong> {/*Placeholder */} Stuff</p>
+          <p><strong>XP (Spent):</strong> {character.xp} ({ getXpSpentForCharacter(characterId) })</p>
+          <p><strong>Court XP (Spent):</strong> {character.courtXp} ({ getCourtXpSpent(characterId) })</p>
+          <p>{/* Future Display Here */}</p>
         </div>
         <div className={"col-3"} style={{ flex: 1 }}>
-          <p><strong>Bank:</strong> {/* Placeholder */} 200</p>
-          <p><strong>Deaths (Total):</strong> {/* Placeholder */} 1</p>
+          <p><strong>Bank:</strong> {character.bank} </p>
+          <p><strong>Deaths (Total):</strong> {character.deaths} </p>
           <p><strong>Deaths (Event):</strong></p>
         </div>
       </div>

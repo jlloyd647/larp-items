@@ -163,7 +163,7 @@ export const CharacterForm = ({ character }: CharacterFormProps) => {
               </Button>
             )}
             <div ref={printRef} className="border border-gray-200 p-4">
-              <CharacterPrintCard characterId={character.id} body={body} skill={skill} />
+              <CharacterPrintCard characterId={character.id} playerId={character.playerId} body={body} skill={skill} />
             </div>
 
             {character?.spells?.length > 0 && (
