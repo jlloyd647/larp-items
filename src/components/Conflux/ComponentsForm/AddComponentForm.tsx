@@ -1,0 +1,83 @@
+'use client';
+
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useComponentStore } from "@/stores/ConfluxStores/useComponentStore";
+import type { Component } from "@/confluxTypes";
+
+const categoryOptions = ["Crystal", "Fiber", "Herbal", "Liquid", "Metal", "Viscera", "Wood"];
+
+const AddComponentForm = ({ onSubmit }: { onSubmit?: () => void }) => {
+  const addComponent = useComponentStore((state) => state.addComponent);
+  const existingComponents = useComponentStore((state) => state.components);
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState("Crystal");
+  const [level, setLevel] = useState(0);
+
+  const reset = () => {
+    setName("");
+    setDescription("");
+    setLevel(0);
+    setType("Crystal");
+  };
+
+  const handleAdd = () => {
+    if (!name || !description) return;
+
+    const newComponent: Component = {
+      id: Math.max(0, ...existingComponents.map((c) => c.id)) + 1,
+      name,
+      description,
+      level,
+      type,
+    };
+
+    addComponent(newComponent);
+    reset();
+    onSubmit?.();
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <Label>Name</Label>
+        <Input value={name} onChange={(e) => setName(e.target.value)} />
+      </div>
+
+      <div className="space-y-1">
+        <Label>Description</Label>
+        <Input value={description} onChange={(e) => setDescription(e.target.value)} />
+      </div>
+
+      <div className="space-y-1">
+        <Label>Type</Label>
+        <div className="flex gap-2">
+          {categoryOptions.map((cat) => (
+            <Button
+              key={cat}
+              variant={type === cat ? "default" : "ghost"}
+              onClick={() => setType(cat)}
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-1">
+        <Label>Levels</Label>
+        <Input type="number" value={level} onChange={(e) => setLevel(Number(e.target.value))} />
+      </div>
+
+      <Button onClick={handleAdd} disabled={!name || !description}>
+        Add Component
+      </Button>
+    </div>
+  );
+};
+
+export default AddComponentForm;
