@@ -2,17 +2,11 @@ import React from 'react';
 
 interface PrinterTestProps {
   name?: string;  // Optional printer name
-  description?: string; // Optional description
-  primaryResourceText?: string | null; // Optional primary resource text
-  secondaryResourceText?: string | null;
   uses?: number | null;
 }
 
 const PrinterTest: React.FC<PrinterTestProps> = ({
   name,
-  description,
-  primaryResourceText,
-  secondaryResourceText,
   uses,
 }) => {
   const handlePrint = () => {
@@ -34,6 +28,15 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
               }
               .name {
                 font-size: 32px;
+                text-align: center;
+                word-wrap: break-word;
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+                max-width: 15ch;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
               }
               .type {
                 display: inline-block;
@@ -60,9 +63,6 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
                 <div class="name">${name}</div>
                 <div class="type">Artisan<br />Consumable</div>
               </div>
-              <p class="regular-text">${description}</p>
-              ${primaryResourceText && `<p class="regular-text">${primaryResourceText}</p>`}
-              ${secondaryResourceText !== null ? `<p class="regular-text">${secondaryResourceText}</p>` : ''}
               <div style="font-size: 24;">
                 <p>Uses:</p>
                 <p>${numberOfUses}</p>

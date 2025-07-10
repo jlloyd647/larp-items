@@ -11,7 +11,7 @@ export interface NonMagicItem {
   name: string;
   type: string;
   craftingLevel: number;
-  components: { componentId: number; quantity: number }[];
+  components: { componentId: number; quantity: number; level?: number }[];
   time: string;
   location: string;
   mind?: number;
@@ -21,7 +21,7 @@ export interface NonMagicItem {
   generalizedEnchantment: boolean;
   enchantmentSlots: number;
   requirementsToCopy?: string;
-
 }
 
 export type ComponentType = 'crystal' | 'fiber' | 'herbal' | 'liquid' | 'metal' | 'viscera' | 'wood';
+export type ItemType = 'Non-Magic' | 'Alchemy' | 'Enchantment' | 'Ritual Crystal'

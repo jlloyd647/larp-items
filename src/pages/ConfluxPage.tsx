@@ -6,10 +6,8 @@ import { useComponentStore } from '@/stores/ConfluxStores/useComponentStore';
 import { useNonMagicItemStore } from '@/stores/ConfluxStores/useNonMagicStore';
 import { ComponentForm } from '@/components/Conflux/ComponentsForm/ComponentForm';
 import NonMagicForm from '@/components/Conflux/NonMagicForm/NonMagicForm';
+import GistSyncPanel from '@/components/DataSync/GistSyncPanel';
 
-// import { RecipeSelector } from '@/components/Selectors/Conflux/RecipeSelector';
-// import { useRecipeStore } from '@/stores/ConfluxStores/useRecipeStore';
-// import { RecipeForm } from '@/components/Conflux/RecipeForm/RecipeForm';
 import { ArtisanRecipe } from '@/types';
 
 const ConfluxPage: React.FC = () => {
@@ -29,45 +27,43 @@ const ConfluxPage: React.FC = () => {
         <Tabs defaultValue="non-magic" className="w-[400px]">
           <TabsList>
             <TabsTrigger value="crafting">Crafting</TabsTrigger>
-            <TabsTrigger value="non-magic">Non-Magic</TabsTrigger>
-            <TabsTrigger value="alchemy">Alchemy</TabsTrigger>
-            <TabsTrigger value="enchantment">Enchantment</TabsTrigger>
-            <TabsTrigger value="ritual-crystal">Ritual Crystal</TabsTrigger>
-            <TabsTrigger value="components">Components</TabsTrigger>
+            <TabsTrigger value="non-magic">Item Manager</TabsTrigger>
+            <TabsTrigger value="components">Component Manager</TabsTrigger>
             <TabsTrigger value="data">Data</TabsTrigger>
           </TabsList>
           <TabsContent value="crafting">
-            {/* <div className='flex flex-row gap-4'>
+            <div className='flex flex-row gap-4'>
               <div>
-                <RecipeSelector list={recipes} setSelected={setSelectedRecipe}/>
+                <NonMagicSelector
+                  list={nonMagicItems}
+                  selectedId={selectedNonMagicId}
+                  setSelectedId={setSelectedNonMagicId}
+                  adminView={false}
+                />
               </div>
               <div>
-                {selectedRecipe && (<RecipeForm selectedRecipe={selectedRecipe}/>)}
+                {selectedNonMagic && (
+                  <NonMagicForm key={selectedNonMagicId} nonMagicItem={selectedNonMagic} adminView={false} />
+                )}
               </div>
-            </div> */}
+            </div>
           </TabsContent>
           <TabsContent value="non-magic">
             <div className='flex flex-row gap-4'>
               <div>
                 <NonMagicSelector
                   list={nonMagicItems}
-                  selectedId={null}
-                  setSelectedId={() => {}}
+                  selectedId={selectedNonMagicId}
+                  setSelectedId={setSelectedNonMagicId}
+                  adminView={true}
                 />
               </div>
               <div>
-                {selectedNonMagic && (<NonMagicForm key={selectedNonMagicId} nonMagicItem={selectedNonMagic} />)}
+                {selectedNonMagic && (
+                  <NonMagicForm key={selectedNonMagicId} nonMagicItem={selectedNonMagic} adminView={true} />
+                )}
               </div>
             </div>
-          </TabsContent>
-          <TabsContent value="alchemy">
-            Coming Soon
-          </TabsContent>
-          <TabsContent value="enchantment">
-            Coming Soon
-          </TabsContent>
-          <TabsContent value="ritual-crystal">
-            Coming Soon
           </TabsContent>
           <TabsContent value="components">
             <div className='flex flex-row gap-4'>
@@ -84,7 +80,7 @@ const ConfluxPage: React.FC = () => {
             </div>
           </TabsContent>
           <TabsContent value="data">
-            Coming Soon
+            <GistSyncPanel />
           </TabsContent>
         </Tabs>
       </div>

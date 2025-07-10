@@ -54,23 +54,31 @@ const AddComponentForm = ({ onSubmit }: { onSubmit?: () => void }) => {
       </div>
 
       <div className="space-y-1">
-        <Label>Type</Label>
+        <Label>Type and Level</Label>
         <div className="flex gap-2">
-          {categoryOptions.map((cat) => (
-            <Button
-              key={cat}
-              variant={type === cat ? "default" : "ghost"}
-              onClick={() => setType(cat)}
-            >
-              {cat}
-            </Button>
-          ))}
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="border rounded px-2 py-1 w-[60%]"
+          >
+            {categoryOptions.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+          <select
+            value={level}
+            onChange={(e) => setLevel(Number(e.target.value))}
+            className="border rounded px-2 py-1 w-[40%]"
+          >
+            {[1, 2, 3].map((lvl) => (
+              <option key={lvl} value={lvl}>
+                Level {lvl}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
-
-      <div className="space-y-1">
-        <Label>Levels</Label>
-        <Input type="number" value={level} onChange={(e) => setLevel(Number(e.target.value))} />
       </div>
 
       <Button onClick={handleAdd} disabled={!name || !description}>

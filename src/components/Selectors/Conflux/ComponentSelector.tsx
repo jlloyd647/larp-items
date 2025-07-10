@@ -52,7 +52,7 @@ const ScrollableList = ({ list, selectedId, setSelectedId }: ComponentSelectorPr
             Add Component
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add Component</DialogTitle>
           </DialogHeader>

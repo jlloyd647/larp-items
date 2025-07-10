@@ -27,3 +27,4 @@ electron
 *.sw?
 
 .env
+CONFLUX-TODO.md

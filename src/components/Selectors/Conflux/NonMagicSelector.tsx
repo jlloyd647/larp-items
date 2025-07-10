@@ -10,9 +10,10 @@ type NonMagicSelectorProps = {
   list: NonMagicItem[];
   selectedId: number | null;
   setSelectedId: (id: number) => void;
+  adminView?: boolean;
 };
 
-const ScrollableList = ({ list, selectedId, setSelectedId }: NonMagicSelectorProps) => {
+const ScrollableList = ({ list, selectedId, setSelectedId, adminView }: NonMagicSelectorProps) => {
   const [search, setSearch] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -45,20 +46,21 @@ const ScrollableList = ({ list, selectedId, setSelectedId }: NonMagicSelectorPro
           </div>
         ))}
       </ScrollArea>
-
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" className="mt-4 w-full">
-            Add Non-Magic Item
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Add Non-Magic Item</DialogTitle>
-          </DialogHeader>
-          <AddNonMagic />
-        </DialogContent>
-      </Dialog>
+      { adminView && (
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="mt-4 w-full">
+              Add Non-Magic Item
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Add Non-Magic Item</DialogTitle>
+            </DialogHeader>
+            <AddNonMagic />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
