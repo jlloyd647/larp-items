@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { useComponentStore } from '@/stores/ConfluxStores/useComponentStore';
-import { useItemStore } from '@/stores/ConfluxStores/useItemStore';
+import { useNonMagicItemStore } from '@/stores/ConfluxStores/useNonMagicStore';
 
 const ENCRYPTION_SECRET = import.meta.env.VITE_ENCRYPTION_SECRET;
 if (!ENCRYPTION_SECRET) {
@@ -25,6 +25,7 @@ const STORE_KEYS = [
 
 // 📤 Upload all stores into one encrypted Gist file
 export async function uploadAllStoresToGist(token: string, filename = 'conflux-item-data.json') {
+  console.log('Made it here');
   const backup: Record<string, any> = {};
 
   for (const key of STORE_KEYS) {
@@ -121,7 +122,7 @@ export async function pullAllDataFromGist() {
 
     if (files['items.json']) {
       const items = JSON.parse(files['items.json'].content);
-      useItemStore.getState().setItems(items);
+      useNonMagicItemStore.getState().setNonMagicItems(items);
     }
 
     // if (files['players.json']) {

@@ -6,7 +6,7 @@ import { useComponentStore } from '@/stores/ConfluxStores/useComponentStore';
 import { useNonMagicItemStore } from '@/stores/ConfluxStores/useNonMagicStore';
 import { ComponentForm } from '@/components/Conflux/ComponentsForm/ComponentForm';
 import NonMagicForm from '@/components/Conflux/NonMagicForm/NonMagicForm';
-import GistSyncPanel from '@/components/DataSync/GistSyncPanel';
+import GistSyncPanelConflux from '@/components/DataSync/GistSyncPanelConflux';
 
 import { ArtisanRecipe } from '@/types';
 
@@ -80,7 +80,7 @@ const ConfluxPage: React.FC = () => {
             </div>
           </TabsContent>
           <TabsContent value="data">
-            <GistSyncPanel />
+            <GistSyncPanelConflux />
           </TabsContent>
         </Tabs>
       </div>
