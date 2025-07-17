@@ -8,7 +8,7 @@ import { useComponentStore } from "@/stores/ConfluxStores/useComponentStore";
 import type { NonMagicItem, ItemType } from "@/confluxTypes";
 import ComponentSelectionDropdown from "@/components/ComponentSelectionDropdown";
 
-const AddNonMagic = ({ onSubmit }: { onSubmit?: () => void }) => {
+const AddItem = ({ onSubmit }: { onSubmit?: () => void }) => {
   const addNonMagicItem = useNonMagicItemStore((state) => state.addNonMagicItem);
   const existingItems = useNonMagicItemStore((state) => state.nonMagicItems);
   const components = useComponentStore((state) => state.components);
@@ -22,7 +22,9 @@ const AddNonMagic = ({ onSubmit }: { onSubmit?: () => void }) => {
   const [willpower, setWillpower] = useState(0); // Updated to number
   const [requiredLores, setRequiredLores] = useState("");
   const [effects, setEffects] = useState("");
+  const [tagEffects, setTagEffects] = useState("");
   const [generalizedEnchantment, setGeneralizedEnchantment] = useState(false);
+  const [isStackable, setIsStackable] = useState(false);
   const [enchantmentSlots, setEnchantmentSlots] = useState(0);
   const [requirementsToCopy, setRequirementsToCopy] = useState("");
   const [selectedComponents, setSelectedComponents] = useState<
@@ -89,6 +91,24 @@ const AddNonMagic = ({ onSubmit }: { onSubmit?: () => void }) => {
           onChange={(e) => setEffects(e.target.value)}
           className="border rounded px-2 py-1 w-full"
           rows={4}
+        />
+      </div>
+
+      <div className="space-y-1">
+        <Label>Tag Effects</Label>
+        <textarea
+          value={tagEffects}
+          onChange={(e) => setTagEffects(e.target.value)}
+          className="border rounded px-2 py-1 w-full"
+          rows={4}
+        />
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Label>Stackable</Label>
+        <Checkbox
+          checked={isStackable}
+          onCheckedChange={(checked) => setIsStackable(checked === true)}
         />
       </div>
 
@@ -207,10 +227,10 @@ const AddNonMagic = ({ onSubmit }: { onSubmit?: () => void }) => {
       </div>
 
       <Button onClick={handleAdd} disabled={!name || !effects}>
-        Add Non-Magic Item
+        Add Item
       </Button>
     </div>
   );
 };
 
-export default AddNonMagic;
+export default AddItem;

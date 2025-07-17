@@ -18,9 +18,11 @@ export interface NonMagicItem {
   willpower?: number;
   requiredLores?: string[];
   effects: string;
+  tagEffects?: string;
   generalizedEnchantment: boolean;
   enchantmentSlots: number;
   requirementsToCopy?: string;
+  isStackable?: boolean;
 }
 
 export type ComponentType = 'crystal' | 'fiber' | 'herbal' | 'liquid' | 'metal' | 'viscera' | 'wood';

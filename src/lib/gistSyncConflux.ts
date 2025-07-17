@@ -25,11 +25,11 @@ const STORE_KEYS = [
 
 // 📤 Upload all stores into one encrypted Gist file
 export async function uploadAllStoresToGist(token: string, filename = 'conflux-item-data.json') {
-  console.log('Made it here');
   const backup: Record<string, any> = {};
 
   for (const key of STORE_KEYS) {
     const data = localStorage.getItem(key);
+    console.log(data)
     if (data) {
       backup[key] = JSON.parse(data);
     }
@@ -65,7 +65,7 @@ export async function uploadAllStoresToGist(token: string, filename = 'conflux-i
 }
 
 // 📥 Load and decrypt the backup, then restore each store
-export async function loadAllStoresFromGist(gistId: string, token: string, filename = 'larp-data.json') {
+export async function loadAllStoresFromGist(gistId: string, token: string, filename = 'conflux-item-data.json') {
   const response = await fetch(`https://api.github.com/gists/${gistId}`, {
     headers: {
       Authorization: `token ${token}`,
@@ -124,31 +124,6 @@ export async function pullAllDataFromGist() {
       const items = JSON.parse(files['items.json'].content);
       useNonMagicItemStore.getState().setNonMagicItems(items);
     }
-
-    // if (files['players.json']) {
-    //   const players = JSON.parse(files['players.json'].content);
-    //   usePlayerStore.getState().setPlayers(players);
-    // }
-
-    // if (files['characters.json']) {
-    //   const characters = JSON.parse(files['characters.json'].content);
-    //   useCharacterStore.getState().setCharacters(characters);
-    // }
-
-    // if (files['traits.json']) {
-    //   const traits = JSON.parse(files['traits.json'].content);
-    //   useTraitStore.getState().setTraits(traits);
-    // }
-
-    // if (files['spells.json']) {
-    //   const spells = JSON.parse(files['spells.json'].content);
-    //   useSpellStore.getState().setSpells(spells);
-    // }
-
-    // if (files['skills.json']) {
-    //   const skills = JSON.parse(files['skills.json'].content);
-    //   useSkillStore.getState().setSkills(skills);
-    // }
 
     console.log('✅ Gist data pulled and applied to stores.');
   } catch (err) {

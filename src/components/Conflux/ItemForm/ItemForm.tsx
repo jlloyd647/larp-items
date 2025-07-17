@@ -24,7 +24,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose,
 } from '../../ui/dialog';
 import ConfirmConfluxPrint from "../ConfirmConfluxPrint";
 
@@ -33,7 +32,7 @@ type NonMagicFormProps = {
   adminView?: boolean;
 };
 
-const NonMagicForm: React.FC<NonMagicFormProps> = ({ nonMagicItem, adminView }) => {
+const ItemForm: React.FC<NonMagicFormProps> = ({ nonMagicItem, adminView }) => {
   const deleteNonMagicItem = useNonMagicItemStore((state) => state.deleteNonMagicItem);
   const [tab, setTab] = useState<'view' | 'edit'>('view');
 
@@ -168,4 +167,4 @@ const NonMagicForm: React.FC<NonMagicFormProps> = ({ nonMagicItem, adminView }) 
   );
 };
 
-export default NonMagicForm;
+export default ItemForm;

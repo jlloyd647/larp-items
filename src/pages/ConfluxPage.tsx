@@ -1,11 +1,11 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ComponentSelector from '@/components/Selectors/Conflux/ComponentSelector';
-import NonMagicSelector from '@/components/Selectors/Conflux/NonMagicSelector';
+import NonMagicSelector from '@/components/Selectors/Conflux/ItemSelector';
 import { useComponentStore } from '@/stores/ConfluxStores/useComponentStore';
 import { useNonMagicItemStore } from '@/stores/ConfluxStores/useNonMagicStore';
 import { ComponentForm } from '@/components/Conflux/ComponentsForm/ComponentForm';
-import NonMagicForm from '@/components/Conflux/NonMagicForm/NonMagicForm';
+import NonMagicForm from '@/components/Conflux/ItemForm/ItemForm';
 import GistSyncPanelConflux from '@/components/DataSync/GistSyncPanelConflux';
 
 import { ArtisanRecipe } from '@/types';

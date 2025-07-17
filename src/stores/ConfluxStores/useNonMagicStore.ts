@@ -45,7 +45,7 @@ export const useNonMagicItemStore = create<NonMagicItemState>()(
 
     }),
     {
-      name: 'non-magic-item-storage',
+      name: 'item-storage',
     }
   )
 );

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from "@/components/ui/dialog";
-import AddNonMagic from "@/components/Conflux/NonMagicForm/AddNonMagic";
+import AddNonMagic from "@/components/Conflux/ItemForm/AddItem";
 import { NonMagicItem } from "@/confluxTypes";
 
 type NonMagicSelectorProps = {
@@ -35,7 +35,7 @@ const ScrollableList = ({ list, selectedId, setSelectedId, adminView }: NonMagic
       />
       <ScrollArea className="h-[400px] rounded-md border p-4">
         {filteredList.map((listItem) => (
-          <div className="flex items-center">
+          <div className="flex items-center" key={listItem.id}>
             <Button
               onClick={() => setSelectedId(listItem.id)}
               variant={selectedId === listItem.id ? "default" : "ghost"}
@@ -50,12 +50,12 @@ const ScrollableList = ({ list, selectedId, setSelectedId, adminView }: NonMagic
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" className="mt-4 w-full">
-              Add Non-Magic Item
+              Add Item
             </Button>
           </DialogTrigger>
           <DialogContent className="max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Add Non-Magic Item</DialogTitle>
+              <DialogTitle>Add Item</DialogTitle>
             </DialogHeader>
             <AddNonMagic />
           </DialogContent>

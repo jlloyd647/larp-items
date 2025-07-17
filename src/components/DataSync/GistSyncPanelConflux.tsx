@@ -15,15 +15,16 @@ import { uploadAllStoresToGist, loadAllStoresFromGist  } from '@/lib/gistSyncCon
 const GistSyncPanel = () => {
   const [token, setToken] = useState('');
   const [gistId, setGistId] = useState('');
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const upload = async () => {
     console.log('Coming from Conflux Gist Panel');
     try {
       const id = await uploadAllStoresToGist(token);
-      alert(`Upload complete. Gist ID: ${id}`);
       setGistId(id);
+      setStatusMessage(`Upload complete. Gist ID: ${id}`); // Set status message
     } catch (err: any) {
-      alert(`Upload failed: ${err.message}`);
+      setStatusMessage(`Upload failed: ${err.message}`); // Set error message
     }
   };
 
@@ -31,10 +32,10 @@ const GistSyncPanel = () => {
     try {
       const ok = await loadAllStoresFromGist(gistId, token);
       if (ok) {
-        alert('Character data restored! Refresh to apply.');
+        setStatusMessage('Item data restored! Go to "View - Reload" to apply.'); // Set success message
       }
     } catch (err: any) {
-      alert(`Load failed: ${err.message}`);
+      setStatusMessage(`Load failed: ${err.message}`); // Set error message
     }
   };
 
@@ -107,6 +108,12 @@ const GistSyncPanel = () => {
         <Button onClick={upload}>⬆️ Upload</Button>
         <Button onClick={load} variant="outline">⬇️ Restore</Button>
       </div>
+
+      {statusMessage && (
+        <div className="mt-4 p-2 border rounded bg-gray-100 text-sm text-gray-700">
+          {statusMessage}
+        </div>
+      )}
     </div>
   );
 };

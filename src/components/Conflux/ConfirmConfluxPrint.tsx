@@ -32,6 +32,8 @@ const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, non
   const [stackSize, setStackSize] = useState(1);
   const [disableStacks, setDisableStacks] = useState(false);
   const [stackText, setStackText] = useState<string>("Stack Size");
+  const [characterName, setCharacterName] = useState<string>("");
+  const [characterId, setCharacterId] = useState<string>("");
 
   const getComponentName = (componentId: number): string => {
     const key = componentId.toString();
@@ -61,22 +63,43 @@ const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, non
         </DialogHeader>
         <p>{nonMagicItem.name}</p>
         <p><strong>Description:</strong> {nonMagicItem.effects || "No description available."}</p>
-        <Input
-          placeholder={stackText}
-          className="mb-4"
-          disabled={disableStacks}
-          onChange={(e) => {
-            setStackSize(Number.isInteger(parseInt(e.target.value)) ? parseInt(e.target.value) : 1);
-          }}
-        />
+        { nonMagicItem.isStackable && (
+          <Input
+            placeholder={stackText}
+            className="mb-4"
+            disabled={disableStacks}
+            onChange={(e) => {
+              setStackSize(Number.isInteger(parseInt(e.target.value)) ? parseInt(e.target.value) : 1);
+            }}
+          />
+        )}
         {nonMagicItem.components.map((component, index) => (
           <p key={index}>
             {getComponentName(component.componentId)} x {component.quantity * stackSize}
           </p>
         ))}
+        <div className="flex space-x-4 mb-4">
+          <Input
+            placeholder="Character Name"
+            className="flex-1"
+            value={characterName}
+            onChange={(e) => setCharacterName(e.target.value)}
+          />
+          <Input
+            placeholder="Character ID"
+            className="flex-1"
+            value={characterId}
+            onChange={(e) => setCharacterId(e.target.value)}
+          />
+        </div>
         <PrinterTest 
           name={nonMagicItem.name} 
+          type={nonMagicItem.type}
+          tagEffects={nonMagicItem.tagEffects}
+          charName={characterName}
+          isStack={nonMagicItem.isStackable}
           uses={stackSize}
+          disabled={!characterName || !characterId} // Disable if character name or ID is missing
         />
       </DialogContent>
     </Dialog>

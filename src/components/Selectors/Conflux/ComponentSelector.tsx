@@ -34,7 +34,7 @@ const ScrollableList = ({ list, selectedId, setSelectedId }: ComponentSelectorPr
       />
       <ScrollArea className="h-[400px] rounded-md border p-4">
         {filteredList.map((listItem) => (
-            <div className="flex items-center">
+            <div className="flex items-center" key={listItem.id}>
               <Button
                 onClick={() => setSelectedId(listItem.id)}
                 variant={selectedId === listItem.id ? 'default' : 'ghost'}
