@@ -31,7 +31,7 @@ const AddNonMagic = ({ onSubmit }: { onSubmit?: () => void }) => {
 
   const reset = () => {
     setName("");
-    setCraftingLevel(0);
+    setCraftingLevel(1);
     setSelectedComponents([]); // Reset selected components
     setTime("");
     setLocation("");
@@ -192,11 +192,12 @@ const AddNonMagic = ({ onSubmit }: { onSubmit?: () => void }) => {
         </div>
       </div>
 
+
       <div className="space-y-1">
         <Label>Required Lores</Label>
         <Input value={requiredLores} onChange={(e) => setRequiredLores(e.target.value)} />
       </div>
-
+      
       <div className="space-y-1">
         <Label>Requirements to Copy</Label>
         <Input

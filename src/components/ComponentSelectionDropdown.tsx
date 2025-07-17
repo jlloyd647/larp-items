@@ -88,7 +88,9 @@ const ComponentSelectionDropdown: React.FC<ComponentSelectionDropdownProps> = ({
                 className="mr-2"
               />
               <label htmlFor={`component-${component.id}`} className="text-sm">
-                {component.name} | {component.type} | L{component.level}
+                {component.name}
+                {"type" in component && component.type !== undefined ? ` | ${component.type}` : ""}
+                {"level" in component && component.level !== undefined ? ` | L${component.level}` : ""}
               </label>
             </li>
           ))}

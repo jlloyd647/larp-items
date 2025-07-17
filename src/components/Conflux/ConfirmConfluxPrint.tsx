@@ -23,7 +23,7 @@ const predefinedComponentMap: Record<string, string> = {
 };
 
 type ConfirmConfluxPrintProps = {
-  disabled: boolean;
+  disabled?: boolean;
   nonMagicItem: NonMagicItem;
 };
 

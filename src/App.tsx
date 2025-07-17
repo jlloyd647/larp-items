@@ -1,7 +1,6 @@
 import './App.css';
 import HomePage from './pages/HomePage';
 import ConfluxPage from './pages/ConfluxPage';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { pullAllDataFromGist } from '@/lib/gistSync';
 
@@ -28,14 +27,7 @@ function App() {
     );
   }
 
-  return (
-    <Router>
-      <Routes>
-        <Route path="/brink" element={<HomePage />} />
-        <Route path="/" element={<ConfluxPage />} />
-      </Routes>
-    </Router>
-  );
+  return <ConfluxPage />;
 }
 
 export default App;
