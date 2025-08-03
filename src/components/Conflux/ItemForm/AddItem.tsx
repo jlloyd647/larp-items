@@ -67,6 +67,8 @@ const AddItem = ({ onSubmit }: { onSubmit?: () => void }) => {
       willpower,
       requiredLores: requiredLores.split(",").map((lore) => lore.trim()),
       effects,
+      tagEffects,
+      isStackable,
       generalizedEnchantment,
       enchantmentSlots,
       requirementsToCopy,
@@ -123,7 +125,7 @@ const AddItem = ({ onSubmit }: { onSubmit?: () => void }) => {
             <option value="" disabled>
               -- Select Type --
             </option>
-            {["non-magic", "alchemy", "enchanting", "ritual crystal"].map((type) => (
+            {["non-magic item", "alchemy", "enchanting", "ritual crystal"].map((type) => (
               <option key={type} value={type}>
                 {type.charAt(0).toUpperCase() + type.slice(1)}
               </option>

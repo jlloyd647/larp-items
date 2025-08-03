@@ -6,8 +6,10 @@ interface PrinterTestProps {
   charName?: string;
   tagEffects?: string;
   isStack?: boolean;
+  baseStackSize?: number;
   uses?: number | null;
   disabled?: boolean; // New property to disable the print button
+  onPrintComplete?: () => void; // Callback after printing is completed
 }
 
 const PrinterTest: React.FC<PrinterTestProps> = ({
@@ -18,14 +20,20 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
   isStack = false,
   uses,
   disabled = false, // Default value for the new property
+  onPrintComplete, // Callback after printing is completed
 }) => {
+  const numberOfUses = (uses ?? 0) > 0
+    ? Array.from({ length: uses || 0 }, () => "▢").reduce((acc: string, curr: string, index: number) => {
+        return acc + curr + ((index + 1) % 10 === 0 ? "<br>" : "");
+      }, "")
+    : "";
+
   const handlePrint = () => {
     if (disabled) return; // Prevent printing if disabled
 
     const openPrintWindow = () => {
       return new Promise<void>((resolve) => {
-        const printWindow = window.open('', '_blank');
-        const numberOfUses = "▢ ".repeat(uses ?? 0);
+        const printWindow = window.open('', '_blank') as unknown as Window | null;
         const currentDate = new Date();
         const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear().toString().slice(-2)}`;
 
@@ -117,7 +125,7 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
 
     const openCrafterWindow = () => {
       return new Promise<void>((resolve) => {
-        const crafterWindow = window.open('', '_blank');
+        const crafterWindow = window.open('', '_blank') as unknown as Window | null;
 
         if (crafterWindow) {
           crafterWindow.document.write(`
@@ -153,7 +161,11 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
       });
     };
 
-    openPrintWindow().then(() => openCrafterWindow());
+    openPrintWindow().then(() => openCrafterWindow()).then(() => {
+      if (onPrintComplete) {
+        onPrintComplete();
+      }
+    });
   };
 
   return (

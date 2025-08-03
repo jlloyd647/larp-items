@@ -26,6 +26,7 @@ import {
   DialogFooter,
 } from '../../ui/dialog';
 import ConfirmConfluxPrint from "../ConfirmConfluxPrint";
+import EditItemForm from "./EditItemForm";
 
 type NonMagicFormProps = {
   nonMagicItem: NonMagicItem;
@@ -122,7 +123,7 @@ const ItemForm: React.FC<NonMagicFormProps> = ({ nonMagicItem, adminView }) => {
           </TabsContent>
 
           <TabsContent value="edit">
-            <p>Edit functionality is under development.</p>
+            <EditItemForm itemId={nonMagicItem.id} onClose={() => setTab('view')} />
           </TabsContent>
         </Tabs>
       </CardContent>

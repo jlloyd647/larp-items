@@ -21,6 +21,8 @@ const ConfluxPage: React.FC = () => {
   // const recipes = useRecipeStore((state) => state.recipes);
   const [selectedRecipe, setSelectedRecipe] = React.useState<ArtisanRecipe | null>(null);
 
+  const [isAdminView, setIsAdminView] = React.useState(false);
+
   return (
     <div className="">
       <div className=''>

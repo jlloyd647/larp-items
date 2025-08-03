@@ -23,7 +23,8 @@ export interface NonMagicItem {
   enchantmentSlots: number;
   requirementsToCopy?: string;
   isStackable?: boolean;
+  baseStackSize?: number;
 }
 
 export type ComponentType = 'crystal' | 'fiber' | 'herbal' | 'liquid' | 'metal' | 'viscera' | 'wood';
-export type ItemType = 'Non-Magic' | 'Alchemy' | 'Enchantment' | 'Ritual Crystal'
+export type ItemType = 'Non-Magic Item' | 'Alchemy' | 'Enchantment' | 'Ritual Crystal'

@@ -27,8 +27,8 @@ import {
 
 import type { Component } from '@/confluxTypes';
 // import SkillEditForm from './SkillEditForm';
-import { useSkillStore } from '@/stores/useSkillStore';
 import { useComponentStore } from '@/stores/ConfluxStores/useComponentStore';
+import EditComponentForm from './EditComponentForm';
 
 type ComponentFormProps = {
   component: Component;
@@ -40,14 +40,10 @@ export const ComponentForm = ({ component }: ComponentFormProps) => {
 
   const deleteComponent = useComponentStore((state) => state.deleteComponent);
 
-  const [name, setName] = useState(component?.name);
-  const [desc, setDesc] = useState(component?.description);
-  const [level, setLevel] = useState(component?.level.toString());
-
   return (
     <Card className="w-[600px]">
       <CardHeader>
-        <CardTitle>{name || 'Unnamed Component'}</CardTitle>
+        <CardTitle>{component?.name || 'Unnamed Component'}</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={tab} onValueChange={(val) => setTab(val as 'view' | 'edit')}>
@@ -58,52 +54,54 @@ export const ComponentForm = ({ component }: ComponentFormProps) => {
 
           <TabsContent value="view">
             <div className="space-y-2">
-              <p><strong>Description:</strong> {desc || 'No description'}</p>
-              <p><strong>Tier Level:</strong> {level}</p>
+              <p><strong>Description:</strong> {component?.description || 'No description'}</p>
+              <p><strong>Tier Level:</strong> {component?.level}</p>
               <p><strong>Type:</strong> {component?.type || 'Unknown'}</p>
             </div>
           </TabsContent>
 
           <TabsContent value="edit">
-            {/* <ComponentEditForm componentId={component.id} /> */}
+            <EditComponentForm componentId={component.id} onClose={() => setTab('view')} />
           </TabsContent>
         </Tabs>
       </CardContent>
 
       <CardFooter className="justify-end">
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="destructive">Delete Component</Button>
-          </DialogTrigger>
+        {tab !== 'edit' && (
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="destructive">Delete Component</Button>
+            </DialogTrigger>
 
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                Delete {component.name || 'Component'}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="text-sm text-muted-foreground">
-              <p>
-                Are you sure you want to delete <strong>{component.name}</strong>? This action cannot be undone.
-              </p>
-            </div>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  Delete {component.name || 'Component'}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="text-sm text-muted-foreground">
+                <p>
+                  Are you sure you want to delete <strong>{component.name}</strong>? This action cannot be undone.
+                </p>
+              </div>
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  deleteComponent(component.id);
-                  setDialogOpen(false);
-                }}
-              >
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>  
-        </Dialog>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogClose>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    deleteComponent(component.id);
+                    setDialogOpen(false);
+                  }}
+                >
+                  Delete
+                </Button>
+              </DialogFooter>
+            </DialogContent>  
+          </Dialog>
+        )}
       </CardFooter>  
     </Card>
   );

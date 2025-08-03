@@ -52,6 +52,12 @@ const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, non
     }
   }, [open]);
 
+  const handlePrintComplete = () => {
+    setCharacterName("");
+    setCharacterId("");
+    setOpen(false);
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -100,6 +106,7 @@ const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, non
           isStack={nonMagicItem.isStackable}
           uses={stackSize}
           disabled={!characterName || !characterId} // Disable if character name or ID is missing
+          onPrintComplete={handlePrintComplete} // Callback to clear inputs and close dialog
         />
       </DialogContent>
     </Dialog>
