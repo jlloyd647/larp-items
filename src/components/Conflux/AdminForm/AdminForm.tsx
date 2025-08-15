@@ -15,9 +15,10 @@ const AdminForm: React.FC<AdminFormProps> = ({ adminView, setAdminView, printPla
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState('');
 
-  const handleAdminViewToggle = (checked: boolean) => {
+  const handleAdminViewToggle = async (checked: boolean) => {
     if (checked) {
-      if (password === '12345') {
+      const isValid = await window.electron?.ipcRenderer.invoke('check-admin-password', password);
+      if (isValid) {
         setAdminView(true);
         setError('');
       } else {
@@ -29,9 +30,10 @@ const AdminForm: React.FC<AdminFormProps> = ({ adminView, setAdminView, printPla
     }
   };
 
-  const handlePlayerStubToggle = (checked: boolean) => {
+  const handlePlayerStubToggle = async (checked: boolean) => {
     if (checked) {
-      if (password === '12345') {
+      const isValid = await window.electron?.ipcRenderer.invoke('check-admin-password', password);
+      if (isValid) {
         setPrintPlayerStub(true);
         setError('');
       } else {

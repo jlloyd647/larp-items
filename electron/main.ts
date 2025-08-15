@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { ipcMain } from 'electron';
 import fs from 'fs';
+import dotenv from 'dotenv';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -62,6 +63,10 @@ app.on('activate', () => {
   }
 });
 
+// Load ADMIN_PASSWORD from .env using dotenv
+dotenv.config();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
 // Any additional IPC handlers can go here
 
 ipcMain.on('print-character-card', () => {
@@ -97,4 +102,9 @@ ipcMain.on('write-crafting-log', (event, logData) => {
       console.error('Failed to write crafting log:', err);
     }
   });
+});
+
+// Add a new IPC handler for password check
+ipcMain.handle('check-admin-password', (event, password) => {
+  return password === ADMIN_PASSWORD;
 });
