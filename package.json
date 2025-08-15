@@ -2,7 +2,7 @@
   "name": "brink-larp-management-system",
   "productName": "Brink - LARP Management System",
   "private": true,
-  "version": "0.9.6",
+  "version": "0.9.7",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {

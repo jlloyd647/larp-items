@@ -7,4 +7,5 @@ contextBridge.exposeInMainWorld('electron', {
     once: (channel, listener) => ipcRenderer.once(channel, listener),
     removeListener: (channel, listener) => ipcRenderer.removeListener(channel, listener),
   },
+  writeCraftingLog: (logData) => ipcRenderer.send('write-crafting-log', logData)
 });

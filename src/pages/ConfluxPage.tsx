@@ -5,6 +5,7 @@ import NonMagicSelector from '@/components/Selectors/Conflux/ItemSelector';
 import { useComponentStore } from '@/stores/ConfluxStores/useComponentStore';
 import { useNonMagicItemStore } from '@/stores/ConfluxStores/useNonMagicStore';
 import { ComponentForm } from '@/components/Conflux/ComponentsForm/ComponentForm';
+import AdminForm from '@/components/Conflux/AdminForm/AdminForm';
 import NonMagicForm from '@/components/Conflux/ItemForm/ItemForm';
 import GistSyncPanelConflux from '@/components/DataSync/GistSyncPanelConflux';
 
@@ -18,10 +19,9 @@ const ConfluxPage: React.FC = () => {
 
   const selectedComponent = useComponentStore((s) => s.getComponentById(selectedComponentId ?? -1));
   const selectedNonMagic = useNonMagicItemStore((s) => s.getNonMagicItemById(selectedNonMagicId ?? -1));
-  // const recipes = useRecipeStore((state) => state.recipes);
-  const [selectedRecipe, setSelectedRecipe] = React.useState<ArtisanRecipe | null>(null);
 
-  const [isAdminView, setIsAdminView] = React.useState(false);
+  const [adminView, setAdminView] = React.useState(false);
+  const [printPlayerStub, setPrintPlayerStub] = React.useState(false);
 
   return (
     <div className="">
@@ -29,9 +29,10 @@ const ConfluxPage: React.FC = () => {
         <Tabs defaultValue="non-magic" className="w-[400px]">
           <TabsList>
             <TabsTrigger value="crafting">Crafting</TabsTrigger>
-            <TabsTrigger value="non-magic">Item Manager</TabsTrigger>
-            <TabsTrigger value="components">Component Manager</TabsTrigger>
-            <TabsTrigger value="data">Data</TabsTrigger>
+            {adminView && <TabsTrigger value="non-magic">Item Manager</TabsTrigger>}
+            {adminView && <TabsTrigger value="components">Component Manager</TabsTrigger>}
+            {adminView && <TabsTrigger value="data">Data</TabsTrigger>}
+            <TabsTrigger value="admin">Admin</TabsTrigger>
           </TabsList>
           <TabsContent value="crafting">
             <div className='flex flex-row gap-4'>
@@ -45,44 +46,57 @@ const ConfluxPage: React.FC = () => {
               </div>
               <div>
                 {selectedNonMagic && (
-                  <NonMagicForm key={selectedNonMagicId} nonMagicItem={selectedNonMagic} adminView={false} />
+                  <NonMagicForm key={selectedNonMagicId} nonMagicItem={selectedNonMagic} adminView={false} printPlayerStub={printPlayerStub} />
                 )}
               </div>
             </div>
           </TabsContent>
-          <TabsContent value="non-magic">
+          {adminView && (
+            <TabsContent value="non-magic">
+              <div className='flex flex-row gap-4'>
+                <div>
+                  <NonMagicSelector
+                    list={nonMagicItems}
+                    selectedId={selectedNonMagicId}
+                    setSelectedId={setSelectedNonMagicId}
+                    adminView={true}
+                  />
+                </div>
+                <div>
+                  {selectedNonMagic && (
+                    <NonMagicForm key={selectedNonMagicId} nonMagicItem={selectedNonMagic} adminView={true} />
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+          )}
+          {adminView && (
+            <TabsContent value="components">
+              <div className='flex flex-row gap-4'>
+                <div>
+                  <ComponentSelector
+                    list={components}
+                    selectedId={selectedComponentId}
+                    setSelectedId={setSelectedComponentId}
+                  />
+                </div>
+                <div>
+                  {selectedComponent && (<ComponentForm key={selectedComponentId} component={selectedComponent} />)}
+                </div>
+              </div>
+            </TabsContent>
+          )}
+          {adminView && (
+            <TabsContent value="data">
+              <GistSyncPanelConflux />
+            </TabsContent>
+          )}
+          <TabsContent value="admin">
             <div className='flex flex-row gap-4'>
               <div>
-                <NonMagicSelector
-                  list={nonMagicItems}
-                  selectedId={selectedNonMagicId}
-                  setSelectedId={setSelectedNonMagicId}
-                  adminView={true}
-                />
-              </div>
-              <div>
-                {selectedNonMagic && (
-                  <NonMagicForm key={selectedNonMagicId} nonMagicItem={selectedNonMagic} adminView={true} />
-                )}
+                <AdminForm adminView={adminView} setAdminView={setAdminView} printPlayerStub={printPlayerStub} setPrintPlayerStub={setPrintPlayerStub} />
               </div>
             </div>
-          </TabsContent>
-          <TabsContent value="components">
-            <div className='flex flex-row gap-4'>
-              <div>
-                <ComponentSelector
-                  list={components}
-                  selectedId={selectedComponentId}
-                  setSelectedId={setSelectedComponentId}
-                />
-              </div>
-              <div>
-                {selectedComponent && (<ComponentForm key={selectedComponentId} component={selectedComponent} />)}
-              </div>
-            </div>
-          </TabsContent>
-          <TabsContent value="data">
-            <GistSyncPanelConflux />
           </TabsContent>
         </Tabs>
       </div>

@@ -31,9 +31,10 @@ import EditItemForm from "./EditItemForm";
 type NonMagicFormProps = {
   nonMagicItem: NonMagicItem;
   adminView?: boolean;
+  printPlayerStub?: boolean;
 };
 
-const ItemForm: React.FC<NonMagicFormProps> = ({ nonMagicItem, adminView }) => {
+const ItemForm: React.FC<NonMagicFormProps> = ({ nonMagicItem, adminView, printPlayerStub }) => {
   const deleteNonMagicItem = useNonMagicItemStore((state) => state.deleteNonMagicItem);
   const [tab, setTab] = useState<'view' | 'edit'>('view');
 
@@ -149,6 +150,7 @@ const ItemForm: React.FC<NonMagicFormProps> = ({ nonMagicItem, adminView }) => {
             <DialogFooter>
               <ConfirmConfluxPrint 
                 nonMagicItem={nonMagicItem}
+                printPlayerStub={printPlayerStub}
               />
               <Button
                 variant="destructive"

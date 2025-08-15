@@ -1,52 +1,36 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import path from "path";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-if (process.platform === "win32") {
-  app.setAppUserModelId(app.getName());
-}
-const isSingleInstance = app.requestSingleInstanceLock();
-if (!isSingleInstance) {
-  app.quit();
-  process.exit(0);
-}
-let mainWindow = null;
-async function createWindow() {
-  mainWindow = new BrowserWindow({
+import { app as e, BrowserWindow as l, ipcMain as p } from "electron";
+import n from "path";
+import { fileURLToPath as m } from "url";
+import a from "fs";
+const u = m(import.meta.url), h = n.dirname(u);
+process.platform === "win32" && e.setAppUserModelId(e.getName());
+const S = e.requestSingleInstanceLock();
+S || (e.quit(), process.exit(0));
+let t = null;
+async function f() {
+  t = new l({
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: false,
-      contextIsolation: true
+      preload: n.join(h, "preload.js"),
+      nodeIntegration: !1,
+      contextIsolation: !0
     }
-  });
-  if (process.env.VITE_DEV_SERVER_URL) {
-    await mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
-    mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadFile(path.join(process.env.DIST || "dist", "index.html"));
-  }
+  }), process.env.VITE_DEV_SERVER_URL ? (await t.loadURL(process.env.VITE_DEV_SERVER_URL), t.webContents.openDevTools()) : t.loadFile(n.join(process.env.DIST || "dist", "index.html"));
 }
-app.whenReady().then(createWindow);
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+e.whenReady().then(f);
+e.on("window-all-closed", () => {
+  process.platform !== "darwin" && e.quit();
 });
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+e.on("activate", () => {
+  l.getAllWindows().length === 0 && f();
 });
-ipcMain.on("print-character-card", () => {
-  const win = BrowserWindow.getFocusedWindow();
-  if (!win) return;
-  win.webContents.print({
-    silent: true,
-    printBackground: true,
-    landscape: true,
+p.on("print-character-card", () => {
+  const o = l.getFocusedWindow();
+  o && o.webContents.print({
+    silent: !0,
+    printBackground: !0,
+    landscape: !0,
     margins: { marginType: "none" },
     // 👈 required
     pageSize: {
@@ -55,9 +39,18 @@ ipcMain.on("print-character-card", () => {
       height: 105e3
       // 105mm
     }
-  }, (success, errorType) => {
-    if (!success) {
-      console.error("Failed to print character card:", errorType);
-    }
+  }, (i, r) => {
+    i || console.error("Failed to print character card:", r);
+  });
+});
+p.on("write-crafting-log", (o, i) => {
+  const r = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), g = n.dirname(process.execPath), s = n.join(g, "log");
+  a.existsSync(s) || a.mkdirSync(s, { recursive: !0 });
+  const c = n.join(s, `${r}_craft_log.txt`);
+  console.log("Crafting log will be saved to:", c);
+  const w = JSON.stringify(i) + `
+`;
+  a.appendFile(c, w, "utf8", (d) => {
+    d && console.error("Failed to write crafting log:", d);
   });
 });

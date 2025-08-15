@@ -10,6 +10,7 @@ interface PrinterTestProps {
   uses?: number | null;
   disabled?: boolean; // New property to disable the print button
   onPrintComplete?: () => void; // Callback after printing is completed
+  printPlayerStub?: boolean;
 }
 
 const PrinterTest: React.FC<PrinterTestProps> = ({
@@ -21,6 +22,7 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
   uses,
   disabled = false, // Default value for the new property
   onPrintComplete, // Callback after printing is completed
+  printPlayerStub,
 }) => {
   const numberOfUses = (uses ?? 0) > 0
     ? Array.from({ length: uses || 0 }, () => "▢").reduce((acc: string, curr: string, index: number) => {
@@ -161,11 +163,18 @@ const PrinterTest: React.FC<PrinterTestProps> = ({
       });
     };
 
-    openPrintWindow().then(() => openCrafterWindow()).then(() => {
-      if (onPrintComplete) {
-        onPrintComplete();
-      }
-    });
+    openPrintWindow()
+      .then(() => {
+        if (printPlayerStub) {
+          return openCrafterWindow();
+        }
+        return Promise.resolve();
+      })
+      .then(() => {
+        if (onPrintComplete) {
+          onPrintComplete();
+        }
+      });
   };
 
   return (

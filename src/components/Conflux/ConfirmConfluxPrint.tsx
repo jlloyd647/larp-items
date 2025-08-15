@@ -25,9 +25,10 @@ const predefinedComponentMap: Record<string, string> = {
 type ConfirmConfluxPrintProps = {
   disabled?: boolean;
   nonMagicItem: NonMagicItem;
+  printPlayerStub?: boolean;
 };
 
-const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, nonMagicItem }) => {
+const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, nonMagicItem, printPlayerStub }) => {
   const [open, setOpen] = useState(false);
   const [stackSize, setStackSize] = useState(1);
   const [disableStacks, setDisableStacks] = useState(false);
@@ -53,6 +54,16 @@ const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, non
   }, [open]);
 
   const handlePrintComplete = () => {
+    // Log limited crafting info to file via Electron preload API
+    if (window.electron?.writeCraftingLog) {
+      window.electron.writeCraftingLog({
+        date: new Date().toISOString(),
+        characterName,
+        characterId,
+        itemName: nonMagicItem.name,
+        components: nonMagicItem.components
+      });
+    }
     setCharacterName("");
     setCharacterId("");
     setOpen(false);
@@ -107,6 +118,7 @@ const ConfirmConfluxPrint: React.FC<ConfirmConfluxPrintProps> = ({ disabled, non
           uses={stackSize}
           disabled={!characterName || !characterId} // Disable if character name or ID is missing
           onPrintComplete={handlePrintComplete} // Callback to clear inputs and close dialog
+          printPlayerStub={printPlayerStub}
         />
       </DialogContent>
     </Dialog>

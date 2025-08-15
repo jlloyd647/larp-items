@@ -1,6 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { ipcMain } from 'electron';
+import fs from 'fs';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -62,8 +64,6 @@ app.on('activate', () => {
 
 // Any additional IPC handlers can go here
 
-import { ipcMain } from 'electron';
-
 ipcMain.on('print-character-card', () => {
   const win = BrowserWindow.getFocusedWindow();
   if (!win) return;
@@ -80,6 +80,21 @@ ipcMain.on('print-character-card', () => {
   }, (success, errorType) => {
     if (!success) {
       console.error('Failed to print character card:', errorType);
+    }
+  });
+});
+
+ipcMain.on('write-crafting-log', (event, logData) => {
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const exeDir = path.dirname(process.execPath);
+  const logDir = path.join(exeDir, 'log');
+  if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+  const logFile = path.join(logDir, `${dateStr}_craft_log.txt`);
+  console.log('Crafting log will be saved to:', logFile);
+  const logEntry = JSON.stringify(logData) + '\n';
+  fs.appendFile(logFile, logEntry, 'utf8', (err) => {
+    if (err) {
+      console.error('Failed to write crafting log:', err);
     }
   });
 });
