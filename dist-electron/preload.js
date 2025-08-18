@@ -1,10 +1,11 @@
-const { contextBridge: o, ipcRenderer: r } = require("electron");
-o.exposeInMainWorld("electron", {
+const { contextBridge, ipcRenderer } = require("electron");
+contextBridge.exposeInMainWorld("electron", {
   ipcRenderer: {
-    send: (e, ...n) => r.send(e, ...n),
-    on: (e, n) => r.on(e, n),
-    once: (e, n) => r.once(e, n),
-    removeListener: (e, n) => r.removeListener(e, n)
+    send: (channel, ...args) => ipcRenderer.send(channel, ...args),
+    on: (channel, listener) => ipcRenderer.on(channel, listener),
+    once: (channel, listener) => ipcRenderer.once(channel, listener),
+    removeListener: (channel, listener) => ipcRenderer.removeListener(channel, listener),
+    invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
   },
-  writeCraftingLog: (e) => r.send("write-crafting-log", e)
+  writeCraftingLog: (logData) => ipcRenderer.send("write-crafting-log", logData)
 });
