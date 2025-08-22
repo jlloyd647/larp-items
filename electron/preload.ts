@@ -1,6 +1,9 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, shell } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
+  shell: {
+    openPath: (filePath) => shell.openPath(filePath),
+  },
   ipcRenderer: {
     send: (channel, ...args) => ipcRenderer.send(channel, ...args),
     on: (channel, listener) => ipcRenderer.on(channel, listener),

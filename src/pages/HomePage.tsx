@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
       <div className=''>
         <Tabs defaultValue="account" className="w-[400px]">
           <TabsList>
-            <TabsTrigger value="artisan">Artisansss</TabsTrigger>
+            <TabsTrigger value="artisan">Artisan</TabsTrigger>
             <TabsTrigger value="gunsmith">Gunsmith</TabsTrigger>
             <TabsTrigger value="alchemy">Alchemy</TabsTrigger>
             <TabsTrigger value="jewelcrafting">Jewelcrafting</TabsTrigger>

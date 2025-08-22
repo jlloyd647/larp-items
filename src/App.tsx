@@ -27,7 +27,7 @@ function App() {
     );
   }
 
-  return <ConfluxPage />;
+  return <HomePage />;
 }
 
 export default App;

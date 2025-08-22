@@ -20,6 +20,12 @@ import CharacterView from './CharacterView';
 import CharacterEditForm from './CharacterEditForm';
 
 import CharacterPrintCard from './CharacterPrintCard';
+import CharacterCardPDF from './CharacterCardPDF';
+import { usePlayerStore } from '@/stores/usePlayerStore';
+import { useSkillStore } from '@/stores/useSkillStore';
+import { useTraitStore } from '@/stores/useTraitStore';
+import { useSpellStore } from '@/stores/useSpellStore';
+import { generateCharacterCardPDF } from './CharacterCardPDF';
 import CharacterSpellPrintCard from './CharacterSpellPrintCard';
 import { Button } from '../ui/button';
 import CharacterDelete from './CharacterDelete';
@@ -32,11 +38,72 @@ type CharacterFormProps = {
 };
 
 export const CharacterForm = ({ character }: CharacterFormProps) => {
+  // Helper to get current date in mm-dd-yy format
+  const getDateString = () => {
+    const now = new Date();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const yy = String(now.getFullYear()).slice(-2);
+    return `${mm}-${dd}-${yy}`;
+  };
+
+  // Handler to open PDF in default viewer (hardcoded path)
+
+
+  // Get player from player store
+  const player = usePlayerStore((state) =>
+    state.players.find((p) => p.id === character.playerId)
+  );
+  // Get skill and trait helpers from their stores
+  const getSkillById = useSkillStore((state) => state.getSkillById);
+  const getTraitById = useTraitStore((state) => state.getTraitById);
+  // Get XP spent helpers from character store
+  const getCourtXpSpent = useCharacterStore((state) => state.getCourtXpSpentForCharacter);
+  const getXpSpentForCharacter = useCharacterStore((state) => state.getXpSpentForCharacter);
+
+  // Enrich skills and traits
+  const skills = character.skills?.map((skill) => {
+    const skillData = getSkillById ? getSkillById(skill.skillId) : {};
+    return { ...skill, ...skillData };
+  }) || [];
+  const traits = character.traits?.map((traitId) => {
+    const traitData = getTraitById ? getTraitById(traitId) : {};
+    return { ...traitData, id: traitId };
+  }) || [];
+  const xpSpent = getXpSpentForCharacter ? getXpSpentForCharacter(character.id) : 0;
+  const courtXpSpent = getCourtXpSpent ? getCourtXpSpent(character.id) : 0;
+
+  const getSpellById = useSpellStore((state) => state.getSpellById);
+  const handleCreatePlayerPDF = async () => {
+    const pdfBytes = await generateCharacterCardPDF({
+      character,
+      player,
+      body,
+      skill,
+      skills,
+      traits,
+      xpSpent,
+      courtXpSpent,
+      getSpellById,
+    });
+    const blob = new Blob([pdfBytes.buffer], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = getDateString();
+    a.href = url;
+    a.download = `${character.name || 'character'}-card-${dateStr}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+  };
   const [tab, setTab] = useState<'view' | 'edit' | 'card'>('view');
   const [body, setBody] = useState<number>(15);
   const [skill, setSkill] = useState<number>(15);
   const printRef = useRef<HTMLDivElement>(null);
-  const printSpellRef = useRef<HTMLDivElement>(null);
+
 
   const magicItem = useMagicItemStore((s) =>
     s.getItemByCharacterId(character.id).find((item) => !item.deleted)
@@ -66,66 +133,6 @@ export const CharacterForm = ({ character }: CharacterFormProps) => {
     }
   }, [character])
 
-  const handlePrint = (ref: React.RefObject<HTMLDivElement | null>) => {
-    if (!ref.current) return;
-  
-    const printContents = ref.current.innerHTML;
-  
-    // Create a hidden iframe
-    const printFrame = document.createElement('iframe');
-    printFrame.name = 'print-frame';
-    printFrame.style.position = 'absolute';
-    printFrame.style.left = '-9999px';
-    document.body.appendChild(printFrame);
-  
-    const frameDoc = printFrame.contentWindow?.document;
-    if (!frameDoc) return;
-  
-    // Write the print content and styles
-    frameDoc.open();
-    frameDoc.write(`
-      <html>
-        <head>
-          <title>Print</title>
-          <style>
-            @page {
-              size: 148mm 105mm; /* A6 landscape */
-              margin: 0;
-            }
-            html, body {
-              width: 148mm;
-              height: 105mm;
-              margin: 0;
-              padding: 0;
-              overflow: hidden;
-            }
-            .card-frame {
-              width: 148mm;
-              height: 105mm;
-              padding: 8mm;
-              font-family: monospace;
-              font-size: 10px;
-            }
-          </style>
-          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
-        </head>
-        <body>
-          <div class="card-frame">
-            ${printContents}
-          </div>
-        </body>
-      </html>
-    `);
-    frameDoc.close();
-  
-    // Print after short delay to ensure rendering is done
-    setTimeout(() => {
-      printFrame.contentWindow?.focus();
-      printFrame.contentWindow?.print();
-      document.body.removeChild(printFrame);
-    }, 250);
-  };
-
   return (
     <Card className="w-[1000px] h-[500px]">
       <CardHeader>
@@ -154,20 +161,18 @@ export const CharacterForm = ({ character }: CharacterFormProps) => {
           </TabsContent>
 
           <TabsContent value="card">
-            <Button onClick={() => handlePrint(printRef)}>
-              🖨️ Print Character Card
+              <Button onClick={handleCreatePlayerPDF} className="ml-2">
+                🧾 Create Player PDF
             </Button>
-            {character?.spells?.length > 0 && (
-              <Button onClick={() => handlePrint(printSpellRef)} className="ml-2">
-                🖨️ Print Spell Card
-              </Button>
-            )}
+            <div ref={printRef} className="border border-gray-200 p-4">
+              <CharacterCardPDF characterId={character.id} playerId={character.playerId} body={body} skill={skill} />
+            </div>
             <div ref={printRef} className="border border-gray-200 p-4">
               <CharacterPrintCard characterId={character.id} playerId={character.playerId} body={body} skill={skill} />
             </div>
 
             {character?.spells?.length > 0 && (
-              <div ref={printSpellRef} className="border border-gray-200 p-4">
+              <div className="border border-gray-200 p-4">
                 <CharacterSpellPrintCard characterId={character.id} />
               </div>
             )}
