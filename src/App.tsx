@@ -1,5 +1,6 @@
 import './App.css';
 import HomePage from './pages/HomePage';
+import ConfluxPage from './pages/ConfluxPage';
 import { useEffect, useState } from 'react';
 import { pullAllDataFromGist } from '@/lib/gistSync';
 

@@ -1,6 +1,9 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { ipcMain } from 'electron';
+import fs from 'fs';
+import dotenv from 'dotenv';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -60,9 +63,11 @@ app.on('activate', () => {
   }
 });
 
-// Any additional IPC handlers can go here
+// Load ADMIN_PASSWORD from .env using dotenv
+dotenv.config();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-import { ipcMain } from 'electron';
+// Any additional IPC handlers can go here
 
 ipcMain.on('print-character-card', () => {
   const win = BrowserWindow.getFocusedWindow();
@@ -82,4 +87,24 @@ ipcMain.on('print-character-card', () => {
       console.error('Failed to print character card:', errorType);
     }
   });
+});
+
+ipcMain.on('write-crafting-log', (event, logData) => {
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const exeDir = path.dirname(process.execPath);
+  const logDir = path.join(exeDir, 'log');
+  if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+  const logFile = path.join(logDir, `${dateStr}_craft_log.txt`);
+  console.log('Crafting log will be saved to:', logFile);
+  const logEntry = JSON.stringify(logData) + '\n';
+  fs.appendFile(logFile, logEntry, 'utf8', (err) => {
+    if (err) {
+      console.error('Failed to write crafting log:', err);
+    }
+  });
+});
+
+// Add a new IPC handler for password check
+ipcMain.handle('check-admin-password', (event, password) => {
+  return password === ADMIN_PASSWORD;
 });

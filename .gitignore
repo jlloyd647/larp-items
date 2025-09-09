@@ -27,3 +27,6 @@ electron
 *.sw?
 
 .env
+CONFLUX-TODO.md
+TODO.md
+*_log.txt

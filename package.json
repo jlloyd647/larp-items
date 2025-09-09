@@ -2,7 +2,7 @@
   "name": "brink-larp-management-system",
   "productName": "Brink - LARP Management System",
   "private": true,
-  "version": "0.9.3",
+  "version": "0.9.8",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -34,7 +34,9 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "crypto-js": "^4.2.0",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.475.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",

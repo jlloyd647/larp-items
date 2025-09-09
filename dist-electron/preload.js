@@ -1,9 +1,14 @@
-const { contextBridge, ipcRenderer } = require("electron");
-contextBridge.exposeInMainWorld("electron", {
+const { contextBridge: r, ipcRenderer: o, shell: i } = require("electron");
+r.exposeInMainWorld("electron", {
+  shell: {
+    openPath: (e) => i.openPath(e)
+  },
   ipcRenderer: {
-    send: (channel, ...args) => ipcRenderer.send(channel, ...args),
-    on: (channel, listener) => ipcRenderer.on(channel, listener),
-    once: (channel, listener) => ipcRenderer.once(channel, listener),
-    removeListener: (channel, listener) => ipcRenderer.removeListener(channel, listener)
-  }
+    send: (e, ...n) => o.send(e, ...n),
+    on: (e, n) => o.on(e, n),
+    once: (e, n) => o.once(e, n),
+    removeListener: (e, n) => o.removeListener(e, n),
+    invoke: (e, ...n) => o.invoke(e, ...n)
+  },
+  writeCraftingLog: (e) => o.send("write-crafting-log", e)
 });
